@@ -1,12 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SITE } from "@/lib/content";
 
 /**
- * Footer — blueprint Section 6.6. Hidden on /contact (minimal page).
- * Rendered globally; the contact page hides it via its own layout logic.
+ * Footer — blueprint Section 6.6. Hidden on /contact (the contact page is
+ * a minimal conversion surface: "keep this completely clean of distractions").
  */
-export function Footer({ hidden = false }: { hidden?: boolean }) {
-  if (hidden) return null;
+export function Footer() {
+  const pathname = usePathname();
+  if (pathname === "/contact") return null;
 
   const year = new Date().getFullYear();
 
