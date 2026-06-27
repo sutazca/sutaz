@@ -120,6 +120,7 @@ CREATE TABLE leads (
   first_contact_date TIMESTAMPTZ,
   last_contact_date  TIMESTAMPTZ,
   next_follow_up      TIMESTAMPTZ,
+  audit_scheduled_at  TIMESTAMPTZ,
 
   -- Source attribution (distinguishes seeded prospects from form leads)
   source          TEXT NOT NULL DEFAULT 'seed',
@@ -194,10 +195,20 @@ BEGIN
 END $$;
 
 -- App can write ROI calculations (public calculator) and insert/update leads,
--- but CANNOT SELECT the full leads table (protects the 210-prospect list +
+-- but CANNOT bulk-read the leads table (protects the 210-prospect list +
 -- inbound submissions from a compromised app role reading bulk PII).
+--
+-- Column-level SELECT grants are deliberately minimal:
+--   (id, status)     — INSERT ... RETURNING echoes the new lead id + status
+--   (contact_email)  — the Calendly webhook correlates a booking to a lead by
+--                      email; UPDATE ... WHERE contact_email=$1 needs SELECT
+--                      on that lookup column. Email is the booking correlation
+--                      key, so this is the minimal exposure to make the
+--                      webhook work. No other PII columns are readable.
 GRANT INSERT ON roi_calculations TO sutaz_app;
-GRANT INSERT, UPDATE ON leads TO sutaz_app;
+GRANT INSERT ON leads TO sutaz_app;
+GRANT UPDATE ON leads TO sutaz_app;
+GRANT SELECT (id, status, contact_email) ON leads TO sutaz_app;
 GRANT INSERT ON webhook_events TO sutaz_app;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO sutaz_app;
 
