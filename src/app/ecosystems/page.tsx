@@ -60,7 +60,7 @@ export default function EcosystemsPage() {
 
   return (
     <>
-      <section className="bg-background-soft py-16 md:py-20">
+      <section className="pt-32 pb-16 md:pt-40 md:pb-20">
         <div className="container-content">
           <SectionHeading
             eyebrow="Industry Ecosystems"

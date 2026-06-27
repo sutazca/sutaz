@@ -198,6 +198,7 @@ export const CONTACT_COPY = {
  * Navbar links (Master Blueprint Doc Section 3)
  * -------------------------------------------------------------------------- */
 export const NAV_LINKS = [
+  { label: "Services", href: "/services" },
   { label: "Ecosystems", href: "/ecosystems" },
   { label: "The Lab", href: "/lab" },
   { label: "FAQ", href: "/#faq" },

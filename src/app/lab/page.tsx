@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function LabPage() {
   return (
     <>
-      <section className="bg-background-soft py-16 md:py-20">
+      <section className="pt-32 pb-16 md:pt-40 md:pb-20">
         <div className="container-content">
           <SectionHeading
             eyebrow="The Engineering Lab"
@@ -32,7 +32,7 @@ export default function LabPage() {
       {/* Phase timeline */}
       <section className="py-16 md:py-20">
         <div className="container-content">
-          <h2 className="mb-10 text-center font-display text-2xl font-bold text-navy-500">
+          <h2 className="mb-10 text-center font-display text-2xl font-bold text-white">
             The 30-Day Phased Rollout
           </h2>
           <PhaseTimeline />
@@ -40,7 +40,7 @@ export default function LabPage() {
       </section>
 
       {/* Sandbox isolation */}
-      <section className="bg-background-soft py-16 md:py-20">
+      <section className="py-16 md:py-20">
         <div className="container-content">
           <SectionHeading
             eyebrow="Sandbox Staging Protocol"
@@ -57,11 +57,11 @@ export default function LabPage() {
       {/* Safety guarantees + CTA */}
       <section className="py-16 md:py-20">
         <div className="container-content">
-          <div className="mx-auto max-w-2xl rounded-card border border-navy-100 bg-white p-8 text-center shadow-[var(--shadow-card)]">
-            <h2 className="font-display text-2xl font-bold text-navy-500">
+          <div className="mx-auto max-w-2xl rounded-card glass-card p-8 text-center">
+            <h2 className="font-display text-2xl font-bold text-white">
               Production handoff only after it&apos;s proven.
             </h2>
-            <p className="mt-3 text-muted">
+            <p className="mt-3 text-slate-400">
               Clean video standard operating procedures for your managers, and
               30 days of active pipeline monitoring after go-live.
             </p>

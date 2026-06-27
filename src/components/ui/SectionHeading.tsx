@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 
 /**
- * SectionHeading — consistent section title + optional subtitle/eyebrow.
- * Eyebrow uses the display font in teal; title is display font, navy.
+ * SectionHeading — editorial section title with monospace eyebrow + teal rule.
+ * Fraunces headline, slate-400 subtitle.
  */
 interface SectionHeadingProps {
   eyebrow?: string;
@@ -10,7 +10,6 @@ interface SectionHeadingProps {
   subtitle?: string;
   align?: "left" | "center";
   className?: string;
-  /** Renders title inside an <h1> instead of <h2> (use once per page, in hero). */
   as?: "h1" | "h2";
 }
 
@@ -31,20 +30,25 @@ export function SectionHeading({
       )}
     >
       {eyebrow ? (
-        <p className="font-display text-sm font-bold uppercase tracking-widest text-teal-600">
-          {eyebrow}
-        </p>
+        <div className={cn("flex items-center gap-3", align === "center" && "justify-center")}>
+          <span className="h-px w-6 bg-teal-500" />
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-teal-400">
+            {eyebrow}
+          </p>
+        </div>
       ) : null}
       <Tag
         className={cn(
-          "mt-3 font-display font-extrabold tracking-tight text-navy-500",
-          Tag === "h1" ? "text-4xl md:text-6xl" : "text-3xl md:text-4xl",
+          "mt-4 text-white text-balance",
+          Tag === "h1"
+            ? "text-display text-4xl md:text-6xl"
+            : "font-display text-3xl font-bold tracking-tight md:text-4xl",
         )}
       >
         {title}
       </Tag>
       {subtitle ? (
-        <p className="mt-4 text-lg text-muted leading-relaxed">{subtitle}</p>
+        <p className="mt-4 text-lg leading-relaxed text-slate-400 text-pretty">{subtitle}</p>
       ) : null}
     </div>
   );

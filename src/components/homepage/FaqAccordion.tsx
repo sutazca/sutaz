@@ -6,15 +6,11 @@ import { Plus } from "lucide-react";
 import { FAQ_ITEMS } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
-/**
- * FaqAccordion — accessible disclosure list. Each item is a button that
- * toggles a region. Keyboard-accessible, aria-wired.
- */
 export function FaqAccordion() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <ul className="divide-y divide-navy-100 rounded-card border border-navy-100 bg-white">
+    <ul className="divide-y divide-white/5 overflow-hidden rounded-card glass-card">
       {FAQ_ITEMS.map((item, i) => {
         const isOpen = open === i;
         return (
@@ -26,14 +22,14 @@ export function FaqAccordion() {
                 aria-expanded={isOpen}
                 aria-controls={`faq-panel-${i}`}
                 id={`faq-button-${i}`}
-                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                className="group flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
               >
-                <span className="font-display text-base font-semibold text-navy-500 md:text-lg">
+                <span className="font-display text-base font-semibold text-white md:text-lg">
                   {item.question}
                 </span>
                 <Plus
                   className={cn(
-                    "shrink-0 text-teal-600 transition-transform duration-200",
+                    "shrink-0 text-teal-400 transition-transform duration-300",
                     isOpen && "rotate-45",
                   )}
                   size={20}
@@ -51,10 +47,10 @@ export function FaqAccordion() {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="px-6 pb-5 text-muted">{item.answer}</p>
+                  <p className="px-6 pb-6 text-slate-400">{item.answer}</p>
                 </motion.div>
               ) : null}
             </AnimatePresence>

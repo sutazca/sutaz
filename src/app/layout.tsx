@@ -1,29 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Geist, JetBrains_Mono } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SITE } from "@/lib/content";
 import "./globals.css";
 
 /**
- * Fonts — self-hosted via next/font (no requests to Google at runtime).
- * Each exposes a CSS variable consumed by the @theme block in globals.css.
+ * Fonts — Engineering-Luxury pairing (verified on Google Fonts, both variable).
+ *  - Fraunces: editorial old-style serif, opsz axis (display-cut at large sizes).
+ *              Headlines only — signals craft/engineering without being generic.
+ *  - Geist:    Vercel's Swiss grotesque, built for dark developer-tooling UIs.
+ *              Body + UI.
+ *  - JetBrains Mono: technical numerals (ROI counter, code, stats).
  */
-const inter = Inter({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-display",
   display: "swap",
+  axes: ["opsz", "SOFT", "WONK"],
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  variable: "--font-body",
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -84,7 +89,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-CA"
-      className={`${inter.variable} ${jakarta.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${geist.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-navy-500">
         <a href="#main" className="skip-link">

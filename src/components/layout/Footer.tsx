@@ -4,70 +4,51 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SITE } from "@/lib/content";
 
-/**
- * Footer — blueprint Section 6.6. Hidden on /contact (the contact page is
- * a minimal conversion surface: "keep this completely clean of distractions").
- */
 export function Footer() {
   const pathname = usePathname();
   if (pathname === "/contact") return null;
-
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-navy-600 text-background-soft/80">
-      <div className="container-content grid gap-8 py-12 md:grid-cols-3">
-        <div>
-          <p className="font-display text-lg font-bold text-white">{SITE.name}</p>
-          <p className="mt-2 text-sm">
-            Enterprise-grade workflow automation for Canadian business.
+    <footer className="relative border-t border-white/5 bg-navy-800">
+      <div className="container-content grid gap-10 py-16 md:grid-cols-4">
+        <div className="md:col-span-2">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-button bg-teal-600 font-display text-sm font-bold text-white">
+              S
+            </span>
+            <span className="font-display text-base font-bold text-white">{SITE.name}</span>
+          </div>
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-500">
+            Enterprise-grade workflow automation engineered for Canadian Real
+            Estate, Construction, Marketing, E-Commerce, and Professional Services.
           </p>
         </div>
 
         <nav aria-label="Footer">
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link href="/ecosystems" className="hover:text-white">
-                Ecosystems
-              </Link>
-            </li>
-            <li>
-              <Link href="/lab" className="hover:text-white">
-                The Lab
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="hover:text-white">
-                Contact
-              </Link>
-            </li>
+          <p className="font-mono text-xs uppercase tracking-widest text-slate-600">Explore</p>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            <li><Link href="/services" className="text-slate-400 hover:text-white">Services Menu</Link></li>
+            <li><Link href="/ecosystems" className="text-slate-400 hover:text-white">Vertical Ecosystems</Link></li>
+            <li><Link href="/lab" className="text-slate-400 hover:text-white">The Engineering Lab</Link></li>
+            <li><Link href="/contact" className="text-slate-400 hover:text-white">Book an Audit</Link></li>
           </ul>
         </nav>
 
-        <div className="text-sm">
-          <p>
-            <a href={`mailto:hello@${SITE.domain}`} className="hover:text-white">
-              hello@{SITE.domain}
-            </a>
-          </p>
-          <ul className="mt-3 space-y-1">
-            <li>
-              <Link href="/privacy" className="hover:text-white">
-                Privacy Policy
-              </Link>
-            </li>
-            <li>
-              <Link href="/terms" className="hover:text-white">
-                Terms of Service
-              </Link>
-            </li>
+        <div>
+          <p className="font-mono text-xs uppercase tracking-widest text-slate-600">Contact</p>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            <li><a href={`mailto:hello@${SITE.domain}`} className="text-slate-400 hover:text-white">hello@{SITE.domain}</a></li>
+            <li><Link href="/privacy" className="text-slate-400 hover:text-white">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="text-slate-400 hover:text-white">Terms of Service</Link></li>
           </ul>
         </div>
       </div>
 
-      <div className="border-t border-navy-500/40">
-        <div className="container-content py-6 text-xs text-background-soft/60">
-          © {year} {SITE.name}. All rights reserved.
+      <div className="border-t border-white/5">
+        <div className="container-content flex flex-col items-center justify-between gap-2 py-6 text-xs text-slate-600 sm:flex-row">
+          <span>© {year} {SITE.name}. All rights reserved.</span>
+          <span className="font-mono">Engineered in Canada · sutaz.ca</span>
         </div>
       </div>
     </footer>
