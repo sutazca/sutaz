@@ -1,0 +1,18 @@
+# Keep the build context lean — none of these belong in the image.
+node_modules
+.next
+.git
+.gitignore
+.gitattributes
+*.md
+.env*
+!.env.example
+Dockerfile
+docker-compose*.yml
+.DS_Store
+.vscode
+.idea
+coverage
+*.log
+npm-debug.log*
+.pnpm-store

@@ -1,0 +1,96 @@
+# ============================================================================
+# sutaz.ca — production stack (Synology DS723+)
+# Two services on an isolated bridge network:
+#   sutazca-app    Next.js standalone (port 8093 host -> 3000 container)
+#   sutazca-db     PostgreSQL 16 (5432 internal only; NOT published to host)
+# Dedicated volumes + least-privilege DB role. Visible in Dockhand on up.
+# Mirrors the mirofish/tottynotti isolated-stack pattern on this NAS.
+# ============================================================================
+
+name: sutazca
+
+networks:
+  sutaz-ca-network:
+    driver: bridge
+    name: sutaz-ca-network
+
+volumes:
+  sutazca-db-data:
+    name: sutazca-db-data
+  sutazca-db-config:
+    name: sutazca-db-config
+
+services:
+  # --------------------------------------------------------------------------
+  # Next.js app
+  # --------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://sutaz.ca}
+        NEXT_PUBLIC_CALENDLY_URL: ${NEXT_PUBLIC_CALENDLY_URL:-}
+    image: sutazca-app:latest
+    container_name: sutazca-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - sutaz-ca-network
+    ports:
+      # Host 8093 -> container 3000. 8093 verified free in the NAS audit
+      # (existing stacks use 8080-8092, 9000). DSM reverse proxy fronts this.
+      - "8093:3000"
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      # Database — connects to the `db` service on the isolated network.
+      # App uses the least-privilege sutaz_app role (see migrations).
+      DATABASE_URL: postgresql://sutaz_app:${POSTGRES_APP_PASSWORD}@db:5432/sutazca
+      # Public (build-time + runtime) values
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://sutaz.ca}
+      NEXT_PUBLIC_CALENDLY_URL: ${NEXT_PUBLIC_CALENDLY_URL:-}
+      # Server-only secrets
+      CALENDLY_WEBHOOK_SIGNING_KEY: ${CALENDLY_WEBHOOK_SIGNING_KEY:-}
+      NEXT_PUBLIC_SITE_NAME: ${NEXT_PUBLIC_SITE_NAME:-Sutaz Automation}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # --------------------------------------------------------------------------
+  # PostgreSQL 16
+  # --------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: sutazca-db
+    restart: unless-stopped
+    networks:
+      - sutaz-ca-network
+    # NOT published to host — only reachable from app via the internal network.
+    # The superuser password is used only for migrations/seed at deploy time.
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: sutazca
+      # Default the least-privilege app role password too (set on first boot)
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
+    volumes:
+      - sutazca-db-data:/var/lib/postgresql/data
+      - sutazca-db-config:/etc/postgresql
+      # First-boot init: runs schema + sets app password + seeds (idempotent).
+      # Only runs on initial volume creation, NOT on restart.
+      - ./supabase/docker-initdb.sh:/docker-entrypoint-initdb.d/01-initdb.sh:ro
+      - ./supabase/migrations:/migrations:ro
+      - ./supabase/seed.sql:/seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sutazca"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
