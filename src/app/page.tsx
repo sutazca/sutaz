@@ -1,8 +1,41 @@
+import { HeroSection } from "@/components/homepage/HeroSection";
+import { ProblemSolution } from "@/components/homepage/ProblemSolution";
+import { EcosystemPreview } from "@/components/homepage/EcosystemPreview";
+import { FAQSection } from "@/components/homepage/FAQSection";
+import { SITE } from "@/lib/content";
+
+/**
+ * Homepage — blueprint Section 6. The conversion engine.
+ * Sections: Hero (50/50 + ROI calc) → ProblemSolution → EcosystemPreview → FAQ.
+ */
 export default function HomePage() {
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE.name,
+    url: `https://${SITE.domain}`,
+    description:
+      "Custom cloud automation engines and internal tools for Canadian Real Estate, Construction, and High-Scale Agency operations.",
+    areaServed: "CA",
+    knowsAbout: [
+      "Workflow Automation",
+      "Intelligent Document Processing",
+      "Lead-to-Booking Systems",
+      "Client Onboarding Automation",
+    ],
+  };
+
   return (
-    <div className="container-content py-24">
-      <h1 className="font-display text-4xl font-bold text-navy-500">sutaz.ca</h1>
-      <p className="mt-4 text-muted">Homepage under construction.</p>
-    </div>
+    <>
+      <HeroSection />
+      <ProblemSolution />
+      <EcosystemPreview />
+      <FAQSection />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+    </>
   );
 }
