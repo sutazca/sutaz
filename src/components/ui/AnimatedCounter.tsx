@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { animate, useInView } from "motion/react";
 
 interface AnimatedCounterProps {
@@ -11,10 +11,37 @@ interface AnimatedCounterProps {
   className?: string;
 }
 
+const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
+
+const subscribeReducedMotion = (cb: () => void) => {
+  if (typeof window === "undefined") return () => {};
+  const mq = window.matchMedia(reducedMotionQuery);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+
+const getReducedMotionSnapshot = (): boolean =>
+  typeof window !== "undefined" &&
+  window.matchMedia(reducedMotionQuery).matches;
+
+const getServerSnapshot = (): boolean => false;
+
+/**
+ * Detect prefers-reduced-motion via useSyncExternalStore (SSR-safe, no
+ * setState-in-effect — the canonical way to subscribe to a media query).
+ */
+function usePrefersReducedMotion(): boolean {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getServerSnapshot,
+  );
+}
+
 /**
  * AnimatedCounter — counts from 0 to `value` once when scrolled into view.
- * Honors prefers-reduced-motion (via motion's animate respecting the global
- * override in globals.css; we also short-circuit to the final value).
+ * Honors prefers-reduced-motion: renders the final value immediately with no
+ * animation (accessibility, AODA/WCAG).
  */
 export function AnimatedCounter({
   value,
@@ -24,27 +51,20 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
-  const [display, setDisplay] = useState(0);
+  const prefersReduced = usePrefersReducedMotion();
+  // When reduced motion is on (or not yet in view), show the final value
+  // directly — no animated setState-in-effect.
+  const [display, setDisplay] = useState(prefersReduced ? value : 0);
 
   useEffect(() => {
-    if (!inView) return;
-
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (prefersReduced) {
-      setDisplay(value);
-      return;
-    }
-
+    if (!inView || prefersReduced) return;
     const controls = animate(0, value, {
       duration,
       ease: "easeOut",
       onUpdate: (v) => setDisplay(v),
     });
     return () => controls.stop();
-  }, [inView, value, duration]);
+  }, [inView, value, duration, prefersReduced]);
 
   return (
     <span ref={ref} className={className} aria-label={format(value)}>
