@@ -1,26 +1,157 @@
+/*
+ * sutaz.ca — Design system (Tailwind CSS v4, CSS-first @theme)
+ *
+ * Source of truth for every token below: the project blueprint (Section 4).
+ * Do NOT introduce a tailwind.config.ts — Tailwind v4 reads tokens from this
+ * @theme block and exposes them as utilities (bg-navy-500, text-teal-600, ...).
+ */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* --------------------------------------------------------------------------
+ * Design tokens — exposed as utilities by @theme
+ *
+ * Color hex values are EXACT from the blueprint:
+ *   navy-500  #0F172A  "Deep Space Navy for tech authority"
+ *   teal-500  #0F766E  "Clean Teal for growth/savings"
+ *   teal-600  #0D9488  CTA button "prominent teal action block"
+ *   background-soft #F8FAFC  "Soft Gray to keep readability high"
+ * -------------------------------------------------------------------------- */
+@theme {
+  /* Primary — Deep Space Navy */
+  --color-navy-50: #e8eaf0;
+  --color-navy-100: #c5c9d9;
+  --color-navy-200: #8b93b3;
+  --color-navy-300: #515d8d;
+  --color-navy-400: #2a3661;
+  --color-navy-500: #0f172a;
+  --color-navy-600: #0d1322;
+  --color-navy-700: #0a0f1a;
+  --color-navy-800: #070b13;
+  --color-navy-900: #04060c;
+
+  /* Secondary — Clean Teal / Emerald */
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #0f766e;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+
+  /* Background */
+  --color-background: #ffffff;
+  --color-background-soft: #f8fafc;
+
+  /* Functional */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-muted: #64748b;
+
+  /* Pain / Cure tints (ProblemSolution section) */
+  --color-pain-bg: #fee2e2;
+  --color-pain-text: #991b1b;
+  --color-cure-bg: #d1fae5;
+  --color-cure-text: #065f46;
+
+  /* Typography */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Layout */
+  --container-content: 1280px;
+
+  /* Radius */
+  --radius-default: 8px;
+  --radius-card: 12px;
+  --radius-button: 6px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.1), 0 1px 2px -1px rgb(15 23 42 / 0.1);
+  --shadow-card-hover: 0 10px 25px -5px rgb(15 23 42 / 0.15), 0 8px 10px -6px rgb(15 23 42 / 0.1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* --------------------------------------------------------------------------
+ * Base layer
+ * -------------------------------------------------------------------------- */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-background);
+    --foreground: var(--color-navy-500);
+  }
+
+  /* The brand is intentionally light-mode only (B2B agency, high readability).
+     We do NOT honor prefers-color-scheme: dark — the blueprint specifies a
+     white/soft-gray canvas with navy text. */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-navy-500);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+
+  /* Respect reduced motion globally (accessibility — AODA/WCAG) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Accessible focus ring for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--color-teal-600);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* --------------------------------------------------------------------------
+ * Utilities
+ * -------------------------------------------------------------------------- */
+@layer utilities {
+  /* Content container — max-width 1280px, centered with responsive padding */
+  .container-content {
+    width: 100%;
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-content {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Skip-to-content link for screen readers / keyboard nav (a11y) */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-navy-500);
+    color: #fff;
+    border-radius: var(--radius-button);
+    transition: top 0.15s ease;
+  }
+  .skip-link:focus {
+    top: 1rem;
+  }
 }
