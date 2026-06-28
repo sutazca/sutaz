@@ -1,12 +1,16 @@
 import { HeroSection } from "@/components/homepage/HeroSection";
+import { StatsBand } from "@/components/homepage/StatsBand";
 import { ProblemSolution } from "@/components/homepage/ProblemSolution";
+import { HowWeBuild } from "@/components/homepage/HowWeBuild";
 import { EcosystemPreview } from "@/components/homepage/EcosystemPreview";
 import { FAQSection } from "@/components/homepage/FAQSection";
+import { FinalCTA } from "@/components/homepage/FinalCTA";
 import { SITE } from "@/lib/content";
 
 /**
  * Homepage — blueprint Section 6. The conversion engine.
- * Sections: Hero (50/50 + ROI calc) → ProblemSolution → EcosystemPreview → FAQ.
+ * Section order: Hero (50/50 + workflow diagram + ROI calc) → StatsBand →
+ * ProblemSolution → HowWeBuild → EcosystemPreview → FAQ → FinalCTA.
  */
 export default function HomePage() {
   const organizationJsonLd = {
@@ -28,9 +32,12 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <StatsBand />
       <ProblemSolution />
+      <HowWeBuild />
       <EcosystemPreview />
       <FAQSection />
+      <FinalCTA />
 
       <script
         type="application/ld+json"

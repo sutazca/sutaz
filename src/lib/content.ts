@@ -142,6 +142,35 @@ export const AGENCY_BLOCK = {
 } as const;
 
 /* --------------------------------------------------------------------------
+ * Ecosystems page — two additional vertical blocks
+ * [DRAFT — needs approval] These blocks are NOT in the blueprint PDFs. They
+ * were drafted to complete the /ecosystems page to all 5 catalog verticals
+ * (E-Commerce + Professional Services were missing). Reword or replace freely;
+ * do not present these as verbatim blueprint copy.
+ * -------------------------------------------------------------------------- */
+export const ECOMMERCE_BLOCK = {
+  /** [DRAFT — needs approval] written on-brand to mirror the other blocks. */
+  body: "Cart abandonment and manual order routing quietly drain e-commerce margin. Our Commerce Engines intercept abandoned checkouts with timed, personalized recovery sequences; parse incoming orders and route them to the correct fulfillment lane the instant they land; and sync inventory across Shopify, Amazon, and your warehouse in real time so stockouts and oversells never reach a customer. Meanwhile, our returns and WMS pipelines keep GST/HST tracking audit-ready.",
+  features: [
+    "Abandoned-cart recovery sequences",
+    "Automated order routing & fulfillment",
+    "Real-time multi-channel inventory sync",
+    "Returns pipeline with GST/HST tracking",
+  ],
+} as const;
+
+export const PROFESSIONAL_SERVICES_BLOCK = {
+  /** [DRAFT — needs approval] written on-brand to mirror the other blocks. */
+  body: "Billable hours disappear into intake forms, conflict checks, and trust accounting. Our Professional-Services Engines capture client intake and run conflict-of-interest checks automatically, spawn the correct matter and document set the moment an engagement is signed, and reconcile trust accounts against your general ledger on a schedule you control. Time tracking flows straight into invoicing, so nothing slips between a consultation and a bill.",
+  features: [
+    "Automated client intake & conflict checks",
+    "Engagement-triggered matter creation",
+    "Trust account three-way reconciliation",
+    "Time-tracking-to-invoicing pipeline",
+  ],
+} as const;
+
+/* --------------------------------------------------------------------------
  * Engineering Lab — 4-phase timeline
  * VERBATIM — Master Blueprint Doc Section 3 (phase titles + descriptions).
  * -------------------------------------------------------------------------- */

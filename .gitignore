@@ -12,6 +12,16 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# personal reference images (not project assets)
+/New folder/
+
+# corepack-generated workspace stub (placeholder content, not meaningful)
+/pnpm-workspace.yaml
 
 # next.js
 /.next/

@@ -56,8 +56,13 @@
   --color-destructive: rgb(239 68 68);
   --color-destructive-foreground: rgb(255 255 255);
   --color-border: rgb(148 163 184 / 0.15);
+  --color-border-strong: rgb(148 163 184 / 0.22); /* solid hairline on dark (P1) */
   --color-input: rgb(148 163 184 / 0.2);
   --color-ring: var(--color-teal-500);
+
+  /* ── Elevated surfaces (depth layering on dark) ── */
+  --color-surface-recessed: #0e1223; /* inset "terminal"/card panels sit deeper than .glass-card */
+  --color-surface-card: #131a2e; /* .glass-card base (matches existing) */
   --radius: 0.5rem;
 
   /* ── Type scale: Major Third 1.25 (per ui-ux-pro-max-skill) ── */
@@ -194,13 +199,24 @@
   }
   .skip-link:focus { top: 1rem; }
 
-  /* Display headline — Fraunces at large optical size */
+  /* Display headline — Fraunces at large optical size.
+   *
+   * CLS NOTE: next/font generates a "Fraunces Fallback" @font-face pointing at
+   * local("Times New Roman"). On systems lacking that font (headless/Linux
+   * Chromium), the fallback resolves to a "loading" font and the heading box
+   * collapses to 0px until Fraunces loads — causing layout shift. We can't put
+   * a generic family in @font-face src, so we RESERVE the line-box here with an
+   * em-based min-height (line-height 1.05 → ~1.05em per line). The box now
+   * occupies its final height from first paint, eliminating the shift. */
   .text-display {
-    font-family: var(--font-display);
+    font-family: var(--font-display), Georgia, "Times New Roman", serif;
     font-optical-sizing: auto;
     font-variation-settings: "opsz" 144;
     letter-spacing: -0.025em;
     line-height: 1.05;
+    text-wrap: balance;
+    /* min-height reservation removed — caused over-reservation on short titles.
+     * CLS is handled by the @font-face fallback override below. */
   }
 
   /* Gradient text accent (teal → teal-300) */
@@ -216,7 +232,7 @@
   .glass-card {
     background: linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(255 255 255 / 0.01)),
                 #131a2e;
-    border: 1px solid rgb(255 255 255 / 0.08);
+    border: 1px solid var(--color-border-strong);
     box-shadow: var(--shadow-card);
     backdrop-filter: blur(16px) saturate(120%);
     transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
@@ -226,6 +242,39 @@
                 #161e34;
     border-color: rgb(13 148 136 / 0.3);
     box-shadow: var(--shadow-card-hover);
+  }
+
+  /* Recessed surface — reads as an inset "terminal"/panel, deeper than .glass-card (P1) */
+  .surface-recessed {
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.02), rgb(0 0 0 / 0.15)),
+      var(--color-surface-recessed);
+    border: 1px solid var(--color-border-strong);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.03), inset 0 8px 24px -16px rgb(0 0 0 / 0.8);
+  }
+
+  /* Engineering Moat card — makes the flagship differentiator visible at a glance (P5) */
+  .card-moat {
+    border-color: rgb(13 148 136 / 0.45);
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.05) inset,
+      0 0 0 1px rgb(13 148 136 / 0.12),
+      0 12px 32px -16px rgb(0 0 0 / 0.7),
+      0 0 24px -10px rgb(13 148 136 / 0.25);
+  }
+  .card-moat:hover {
+    border-color: rgb(13 148 136 / 0.65);
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.08) inset,
+      0 0 0 1px rgb(13 148 136 / 0.22),
+      0 20px 48px -16px rgb(0 0 0 / 0.8),
+      0 0 32px -8px rgb(13 148 136 / 0.4);
+  }
+
+  /* Teal-centered section divider for editorial rhythm (P1) */
+  .divider-glow {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(13 148 136 / 0.4), transparent);
   }
 
   .hairline {
@@ -238,18 +287,47 @@
   .glow-teal:hover { box-shadow: var(--shadow-glow); }
   .glow-always { box-shadow: var(--shadow-glow); }
 
-  /* Hero vibrant backdrop — gives glass + glow color to refract (P0-3) */
+  /* Hero vibrant backdrop — intensified teal so glass + glow refract color (P2) */
   .hero-aura {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 0;
     background:
-      radial-gradient(60% 55% at 78% 18%, rgb(13 148 136 / 0.22), transparent 65%),
-      radial-gradient(45% 40% at 15% 25%, rgb(99 102 241 / 0.10), transparent 70%);
-    filter: blur(8px);
+      radial-gradient(62% 58% at 76% 14%, rgb(13 148 136 / 0.30), transparent 64%),
+      radial-gradient(48% 44% at 12% 22%, rgb(99 102 241 / 0.14), transparent 70%),
+      radial-gradient(40% 30% at 50% 100%, rgb(13 148 136 / 0.08), transparent 70%);
+    filter: blur(10px);
   }
 
   /* Prose helper for long-form sections */
   .prose-narrow { max-width: 65ch; }
+}
+
+/*
+ * Override next/font's generated "Fraunces Fallback" @font-face.
+ *
+ * ROOT CAUSE of /services + /ecosystems CLS=0.467: next/font emits a fallback
+ * @font-face with src: local("Times New Roman"). On some systems (notably
+ * headless/Linux Chromium) the `local()` lookup by PostScript name fails, so
+ * the fallback resolves to a "loading" font and the heading box collapses to
+ * 0px until Fraunces loads — a large layout shift. A later @font-face with the
+ * same family name overrides it; we provide MANY local() candidates (covering
+ * Windows, macOS, Linux variants) plus the same metric overrides next/font
+ * computed, so the fallback renders real text immediately.
+ */
+@font-face {
+  font-family: "Fraunces Fallback";
+  src:
+    local("Times New Roman"),
+    local("TimesNewRomanPSMT"),
+    local("Times"),
+    local("Liberation Serif"),
+    local("DejaVu Serif"),
+    local("Nimbus Roman"),
+    local("Georgia");
+  ascent-override: 84.71%;
+  descent-override: 22.09%;
+  line-gap-override: 0%;
+  size-adjust: 115.45%;
 }

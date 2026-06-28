@@ -1,0 +1,67 @@
+"use client";
+
+import { motion } from "motion/react";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+
+/**
+ * StatsBand — homepage social-proof strip between hero and ProblemSolution.
+ * Four animated counters on a divider-glow band. Every figure is blueprint-
+ * sourced (see src/lib/content.ts):
+ *  - 99.8% structural precision (Master Blueprint Section 1, IDP)
+ *  - 120s lead-to-booking response (Master Blueprint Section 3)
+ *  - 30-day deterministic rollout (Master Blueprint Section 3)
+ *  - 4 isolated build phases (Lab phases — LAB_PHASES length)
+ */
+const ease = [0.16, 1, 0.3, 1] as const;
+
+interface StatItem {
+  value: number;
+  suffix: string;
+  label: string;
+  decimals?: number;
+}
+const STATS: StatItem[] = [
+  { value: 99.8, suffix: "%", label: "Document precision", decimals: 1 },
+  { value: 120, suffix: "s", label: "Avg. lead response" },
+  { value: 30, suffix: "-day", label: "Deterministic rollout" },
+  { value: 4, suffix: "", label: "Isolated build phases" },
+];
+
+export function StatsBand() {
+  return (
+    <section className="relative py-10">
+      <div className="container-content">
+        <div className="divider-glow" aria-hidden />
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.5, ease }}
+          className="grid grid-cols-2 gap-y-8 py-10 md:grid-cols-4"
+        >
+          {STATS.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <div className="flex items-baseline justify-center font-display text-4xl font-bold text-white md:text-5xl">
+                <AnimatedCounter
+                  value={stat.value}
+                  duration={1.6}
+                  format={(n) =>
+                    n.toLocaleString("en-CA", {
+                      minimumFractionDigits: stat.decimals ?? 0,
+                      maximumFractionDigits: stat.decimals ?? 0,
+                    })
+                  }
+                />
+                <span className="text-gradient-teal">{stat.suffix}</span>
+              </div>
+              <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </motion.div>
+        <div className="divider-glow" aria-hidden />
+      </div>
+    </section>
+  );
+}

@@ -92,7 +92,7 @@ export function HeroROICalculator() {
 
       <a
         href="/contact"
-        className="group mt-6 flex w-full items-center justify-center gap-2 rounded-button bg-teal-600 px-6 py-3.5 text-base font-semibold text-white transition-all hover:bg-teal-500 glow-teal"
+        className="group mt-6 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-button bg-teal-700 px-6 py-3.5 text-base font-semibold text-white transition-all hover:bg-teal-600 glow-teal"
       >
         Schedule Your Free Audit
         <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />

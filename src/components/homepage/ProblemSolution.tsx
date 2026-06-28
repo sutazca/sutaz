@@ -1,12 +1,19 @@
 "use client";
 
 import { motion } from "motion/react";
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ArrowRight } from "lucide-react";
 import { PAIN_CURE_PAIRS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
+/**
+ * ProblemSolution — pain/cure pairs restyled to the luxury-dark language (P4).
+ * Previously flat saturated red/green halves that broke the visual system.
+ * Now: each pair is a single glass card with STRUCTURAL color coding — a red
+ * left-rule + AlertTriangle for the pain, a teal left-rule + CheckCircle2 for
+ * the cure, joined by an inline "→" arrow. Verbatim PAIN_CURE_PAIRS preserved.
+ */
 export function ProblemSolution() {
   return (
     <section className="relative py-24 md:py-32">
@@ -25,15 +32,33 @@ export function ProblemSolution() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-15%" }}
               transition={{ duration: 0.6, delay: i * 0.08, ease }}
-              className="grid gap-px overflow-hidden rounded-card bg-white/10 md:grid-cols-2"
+              className="glass-card grid gap-0 overflow-hidden rounded-card md:grid-cols-[1fr_auto_1fr]"
             >
-              <div className="flex gap-4 bg-red-950/40 p-6">
-                <AlertTriangle className="shrink-0 text-red-400" size={22} aria-hidden />
-                <p className="text-red-200">{pair.pain}</p>
+              {/* Pain — structural red left-rule */}
+              <div className="flex gap-4 border-l-2 border-red-400/70 p-6">
+                <AlertTriangle className="mt-0.5 shrink-0 text-red-400" size={20} aria-hidden />
+                <p className="text-slate-300">
+                  <span className="mb-1 block font-mono text-[10px] uppercase tracking-widest text-red-400/80">
+                    Without
+                  </span>
+                  {pair.pain}
+                </p>
               </div>
-              <div className="flex gap-4 bg-emerald-950/40 p-6">
-                <CheckCircle2 className="shrink-0 text-emerald-400" size={22} aria-hidden />
-                <p className="text-emerald-200">{pair.cure}</p>
+
+              {/* Arrow divider */}
+              <div className="flex items-center justify-center border-t border-[var(--color-border-strong)] bg-white/[0.02] px-4 md:border-l md:border-t-0">
+                <ArrowRight className="rotate-90 text-teal-400 md:rotate-0" size={18} aria-hidden />
+              </div>
+
+              {/* Cure — structural teal left-rule */}
+              <div className="flex gap-4 border-l-2 border-teal-400/70 p-6 md:border-l-2">
+                <CheckCircle2 className="mt-0.5 shrink-0 text-teal-400" size={20} aria-hidden />
+                <p className="text-slate-200">
+                  <span className="mb-1 block font-mono text-[10px] uppercase tracking-widest text-teal-400">
+                    With Sutaz
+                  </span>
+                  {pair.cure}
+                </p>
               </div>
             </motion.div>
           ))}

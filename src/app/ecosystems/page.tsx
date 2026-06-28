@@ -5,19 +5,24 @@ import {
   REAL_ESTATE_BLOCK,
   CONSTRUCTION_BLOCK,
   AGENCY_BLOCK,
+  ECOMMERCE_BLOCK,
+  PROFESSIONAL_SERVICES_BLOCK,
   SITE,
 } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Industry Ecosystems",
   description:
-    "Purpose-built automation engines for Canadian Real Estate, Construction, and High-Scale Agency operations that can't afford downtime.",
+    "Purpose-built automation engines for Canadian Real Estate, Construction, Agencies, E-Commerce, and Professional Services that can't afford downtime.",
   alternates: { canonical: "/ecosystems" },
 };
 
 /**
- * Ecosystems page — blueprint Section 7. Three vertical blocks, each with
- * VERBATIM body copy (sourced in src/lib/content.ts) + animated wireframe.
+ * Ecosystems page — blueprint Section 7. Five vertical blocks (P6: previously
+ * only 3; E-Commerce + Professional Services added to match the catalog).
+ * Real Estate, Construction, and Agency body copy is VERBATIM (sourced in
+ * src/lib/content.ts). E-Commerce and Professional-Services body copy is
+ * DRAFT (clearly marked in content.ts) — pending sign-off.
  */
 export default function EcosystemsPage() {
   const serviceJsonLd = {
@@ -54,6 +59,22 @@ export default function EcosystemsPage() {
             description: AGENCY_BLOCK.body,
           },
         },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "E-Commerce Automation",
+            description: ECOMMERCE_BLOCK.body,
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Professional Services Automation",
+            description: PROFESSIONAL_SERVICES_BLOCK.body,
+          },
+        },
       ],
     },
   };
@@ -63,6 +84,7 @@ export default function EcosystemsPage() {
       <section className="pt-32 pb-16 md:pt-40 md:pb-20">
         <div className="container-content">
           <SectionHeading
+            as="h1"
             eyebrow="Industry Ecosystems"
             title="Specialized Vertical Ecosystems"
             subtitle="Purpose-built automation engines for Canadian industries that can't afford downtime."
@@ -114,6 +136,39 @@ export default function EcosystemsPage() {
           "Onboard Complete",
         ]}
         ctaLabel="Schedule Agency Audit"
+      />
+
+      {/* [DRAFT copy — pending approval, see src/lib/content.ts ECOMMERCE_BLOCK] */}
+      <EcosystemBlock
+        id="e-commerce"
+        eyebrow="E-Commerce & Retail"
+        body={ECOMMERCE_BLOCK.body}
+        features={ECOMMERCE_BLOCK.features}
+        workflowSteps={[
+          "Order Placed",
+          "Auto Route",
+          "Inventory Sync",
+          "Cart Recovery",
+          "Shipment Push",
+        ]}
+        ctaLabel="Schedule E-Commerce Audit"
+        reverse
+      />
+
+      {/* [DRAFT copy — pending approval, see src/lib/content.ts PROFESSIONAL_SERVICES_BLOCK] */}
+      <EcosystemBlock
+        id="professional-services"
+        eyebrow="Professional Services & Legal"
+        body={PROFESSIONAL_SERVICES_BLOCK.body}
+        features={PROFESSIONAL_SERVICES_BLOCK.features}
+        workflowSteps={[
+          "Client Intake",
+          "Conflict Check",
+          "Matter Spawn",
+          "Trust Reconcile",
+          "Auto Invoice",
+        ]}
+        ctaLabel="Schedule Professional Services Audit"
       />
 
       <script

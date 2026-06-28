@@ -2,19 +2,30 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { Star } from "lucide-react";
 import {
   VERTICALS,
   ALL_CATEGORIES,
   ALL_COMPLEXITY,
   ALL_TYPES,
   CATEGORY_COLORS,
-  COMPLEXITY_META,
   type Service,
   type ServiceCategory,
   type Complexity,
   type EngagementType,
 } from "@/lib/service-catalog";
 import { cn } from "@/lib/utils";
+
+/**
+ * ServiceMenu — the flagship interactive catalog.
+ * Restyle (P5): cards use the recessed surface so each is clearly delimited;
+ * Engineering Moat services get .card-moat + a prominent star badge so the
+ * differentiator reads at a glance; type hierarchy bumped for AA contrast;
+ * FilterChip switched from inline-hex style to Tailwind + tokens.
+ *
+ * NOTE: COMPLEXITY_META is intentionally not imported — it carries description
+ * copy that isn't surfaced in this view (kept in the catalog for future use).
+ */
 
 const COMPLEXITY_STYLE: Record<Complexity, string> = {
   Quick: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
@@ -37,24 +48,32 @@ function ServiceCard({ service }: { service: Service }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.25 }}
-      className="group flex flex-col gap-3 rounded-xl glass-card p-5 transition-colors hover:bg-white/[0.05]"
-      style={{ borderLeft: `3px solid ${catColor}` }}
+      className={cn(
+        "group flex flex-col gap-3 rounded-xl border p-5 transition-colors",
+        "border-[var(--color-border-strong)]",
+        service.moat ? "surface-recessed card-moat" : "surface-recessed hover:border-teal-400/40",
+      )}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="font-display text-sm font-bold leading-snug text-white">{service.name}</p>
-        {service.moat && (
+        <p className="font-display text-base font-bold leading-snug text-white">
+          {service.name}
+        </p>
+        {service.moat ? (
           <span
-            className="shrink-0 rounded-full bg-violet-500/20 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide text-violet-300 ring-1 ring-inset ring-violet-500/40"
+            className="flex shrink-0 items-center gap-1 rounded-full bg-teal-500/15 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wide text-teal-300 ring-1 ring-inset ring-teal-400/40"
             title="Engineering Moat — no-code agencies cannot build this"
           >
-            ★ Moat
+            <Star size={11} className="fill-teal-300" aria-hidden />
+            Moat
           </span>
-        )}
+        ) : null}
       </div>
-      <p className="text-xs leading-relaxed text-slate-500">{service.problem}</p>
-      <div className="mt-auto flex flex-wrap gap-1.5 border-t border-white/5 pt-3">
-        <span className="rounded-md px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset"
-          style={{ background: catColor + "20", color: catColor, borderColor: catColor + "40" }}>
+      <p className="text-sm leading-relaxed text-slate-400">{service.problem}</p>
+      <div className="mt-auto flex flex-wrap gap-1.5 border-t border-[var(--color-border-strong)] pt-3">
+        <span
+          className="rounded-md px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset"
+          style={{ background: catColor + "20", color: catColor, borderColor: catColor + "40" }}
+        >
           {service.category}
         </span>
         <span className={cn("rounded-md px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset", COMPLEXITY_STYLE[service.complexity])}>
@@ -108,7 +127,7 @@ export function ServiceMenu() {
   return (
     <div>
       {/* Vertical tabs */}
-      <div className="overflow-x-auto border-b border-white/5">
+      <div className="overflow-x-auto border-b border-[var(--color-border-strong)]">
         <div className="flex min-w-max gap-1">
           {VERTICALS.map((v) => (
             <button
@@ -119,7 +138,7 @@ export function ServiceMenu() {
                 "flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3.5 text-sm font-bold transition-colors",
                 activeVertical === v.id
                   ? "border-teal-400 text-white"
-                  : "border-transparent text-slate-500 hover:text-slate-300",
+                  : "border-transparent text-slate-400 hover:text-slate-200",
               )}
             >
               <span>{v.emoji}</span>
@@ -172,9 +191,9 @@ export function ServiceMenu() {
       {/* Filters */}
       <div className="mt-5 rounded-card glass-card p-5">
         <div className="mb-3 flex items-center justify-between">
-          <p className="font-mono text-xs uppercase tracking-widest text-slate-500">Filter</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-slate-400">Filter</p>
           {hasFilters ? (
-            <button onClick={clearFilters} className="text-xs text-slate-500 underline hover:text-slate-300">
+            <button onClick={clearFilters} className="text-xs text-slate-400 underline hover:text-slate-200">
               Clear · {filtered.length}/{vertical.services.length}
             </button>
           ) : null}
@@ -204,27 +223,33 @@ export function ServiceMenu() {
           <button
             onClick={() => setFilters((f) => ({ ...f, moatOnly: !f.moatOnly }))}
             className={cn(
-              "rounded-full border px-3 py-1 text-xs font-bold transition-all",
-              filters.moatOnly ? "border-violet-500 bg-violet-500/20 text-violet-200" : "border-white/10 bg-white/5 text-slate-400",
+              "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold transition-all",
+              filters.moatOnly
+                ? "border-teal-400 bg-teal-500/20 text-teal-200"
+                : "border-[var(--color-border-strong)] bg-white/[0.03] text-slate-300 hover:border-teal-400/50",
             )}
           >
-            ★ Moat Only
+            <Star size={11} className={filters.moatOnly ? "fill-teal-300 text-teal-300" : ""} aria-hidden />
+            Moat Only
           </button>
         </div>
       </div>
 
-      {/* Service grid (grouped by category) */}
+      {/* Result count + Service grid (grouped by category) */}
       <AnimatePresence mode="wait">
         <motion.div key={activeVertical + JSON.stringify(filters)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="mt-8 space-y-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-slate-500">
+            Showing {filtered.length} of {vertical.services.length} services
+          </p>
           {Object.keys(grouped).length === 0 ? (
-            <p className="py-12 text-center text-slate-500">No services match the current filters.</p>
+            <p className="py-12 text-center text-slate-400">No services match the current filters.</p>
           ) : (
             Object.entries(grouped).map(([cat, services]) => (
               <div key={cat}>
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: CATEGORY_COLORS[cat as ServiceCategory] }} />
-                  <p className="font-mono text-xs uppercase tracking-widest text-slate-400">{cat}</p>
-                  <span className="font-mono text-xs text-slate-600">({services.length})</span>
+                  <p className="font-mono text-xs uppercase tracking-widest text-slate-300">{cat}</p>
+                  <span className="font-mono text-xs text-slate-500">({services.length})</span>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {services.map((s) => <ServiceCard key={s.name} service={s} />)}
@@ -241,7 +266,7 @@ export function ServiceMenu() {
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      <span className="pr-1 font-mono text-xs text-slate-600">{label}:</span>
+      <span className="pr-1 font-mono text-xs text-slate-400">{label}:</span>
       {children}
     </div>
   );
@@ -253,14 +278,13 @@ function FilterChip({
   return (
     <button
       onClick={onClick}
-      className="rounded-full border px-2.5 py-1 text-xs font-semibold transition-all"
-      style={
-        active && color
-          ? { background: color, color: "#fff", borderColor: color }
-          : active
-            ? { background: "#fff", color: "#0f172a", borderColor: "#fff" }
-            : { background: "rgb(255 255 255 / 0.04)", color: "rgb(148 163 184)", borderColor: "rgb(148 163 184 / 0.2)" }
-      }
+      className={cn(
+        "min-h-[28px] rounded-full border px-2.5 py-1 text-xs font-semibold transition-all",
+        active
+          ? "border-teal-400 bg-teal-500/20 text-teal-100"
+          : "border-[var(--color-border-strong)] bg-white/[0.03] text-slate-300 hover:border-teal-400/50 hover:text-white",
+      )}
+      style={active && color ? { background: color + "30", color: "#fff", borderColor: color } : undefined}
     >
       {children}
     </button>

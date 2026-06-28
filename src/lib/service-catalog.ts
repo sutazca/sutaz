@@ -1,6 +1,7 @@
 /**
  * Service catalog data — adapted from service-menu-2.jsx (the differentiator).
- * 5 verticals, ~120 services with Engineering Moat flags. The /services page
+ * 5 verticals with Engineering Moat flags. Total count is computed at the foot
+ * of this file (TOTAL_SERVICES) so copy can never drift. The /services page
  * consumes this; the homepage EcosystemPreview consumes the vertical summaries.
  *
  * Sourced verbatim from the attached service-menu spec.
@@ -219,3 +220,14 @@ export const VERTICALS: Vertical[] = [
 export const ALL_CATEGORIES: ServiceCategory[] = ["Integration", "Automation", "AI-Powered", "Dashboards", "Compliance", "Portal"];
 export const ALL_COMPLEXITY: Complexity[] = ["Quick", "Mid", "Complex", "Enterprise"];
 export const ALL_TYPES: EngagementType[] = ["Build", "Retainer", "Both"];
+
+/**
+ * Total service + moat counts, computed from the catalog so copy can never
+ * drift. Replaces the previous hardcoded "120+" (which was wrong). Import this
+ * wherever a service count appears in copy/metadata.
+ */
+export const TOTAL_SERVICES = VERTICALS.reduce((sum, v) => sum + v.services.length, 0);
+export const TOTAL_MOAT = VERTICALS.reduce(
+  (sum, v) => sum + v.services.filter((s) => s.moat).length,
+  0,
+);

@@ -19,6 +19,14 @@ export function Navbar() {
   const pathname = usePathname();
   const isContactPage = pathname === "/contact";
 
+  // Active-route check: NAV_LINKS hrefs may include a hash (e.g. "/#faq"),
+  // so compare against the path portion only. (P6: was unused despite import.)
+  const isLinkActive = (href: string) => {
+    const path = href.split("#")[0];
+    if (path === "/") return pathname === "/";
+    return pathname === path;
+  };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -56,7 +64,7 @@ export function Navbar() {
           className="group flex items-center gap-2.5"
           aria-label={`${SITE.name} home`}
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-button bg-teal-600 font-display text-sm font-bold text-white transition-transform group-hover:scale-105 glow-teal">
+          <span className="flex h-9 w-9 items-center justify-center rounded-button bg-teal-700 font-display text-sm font-bold text-white transition-transform group-hover:scale-105 glow-teal">
             S
           </span>
           <span className="flex flex-col leading-none">
@@ -71,23 +79,35 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className="group relative rounded-button px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:text-white"
-              >
-                {link.label}
-                <span className="absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-teal-400 transition-transform duration-300 group-hover:scale-x-100" />
-              </Link>
-            </li>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isLinkActive(link.href);
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "group relative rounded-button px-4 py-2 text-sm font-medium transition-colors",
+                    active ? "text-white" : "text-slate-300 hover:text-white",
+                  )}
+                >
+                  {link.label}
+                  <span
+                    className={cn(
+                      "absolute inset-x-4 -bottom-0.5 h-px origin-left bg-teal-400 transition-transform duration-300",
+                      active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                    )}
+                  />
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="hidden md:block">
           <Link
             href="/contact"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-button bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-teal-500 glow-teal"
+            className="group relative inline-flex min-h-[44px] items-center gap-2 overflow-hidden rounded-button bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-teal-600 glow-teal"
           >
             <span className="relative z-10">{SITE.ctaPrimary}</span>
             <span className="relative z-10 transition-transform group-hover:translate-x-0.5">→</span>
@@ -97,7 +117,7 @@ export function Navbar() {
         {/* Mobile toggle */}
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-button p-2 text-white md:hidden"
+          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-button p-2 text-white md:hidden"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
@@ -121,22 +141,31 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
           >
             <ul className="container-content flex flex-col gap-1 py-8">
-              {NAV_LINKS.map((link, i) => (
-                <motion.li
-                  key={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 * i + 0.1 }}
-                >
-                  <Link
-                    href={link.href}
-                    className="block rounded-button px-4 py-4 font-display text-2xl font-semibold text-white hover:bg-white/5"
-                    onClick={() => setMobileOpen(false)}
+              {NAV_LINKS.map((link, i) => {
+                const active = isLinkActive(link.href);
+                return (
+                  <motion.li
+                    key={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 * i + 0.1 }}
                   >
-                    {link.label}
-                  </Link>
-                </motion.li>
-              ))}
+                    <Link
+                      href={link.href}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "block rounded-button px-4 py-4 font-display text-2xl font-semibold transition-colors",
+                        active
+                          ? "bg-teal-500/10 text-white"
+                          : "text-white hover:bg-white/5",
+                      )}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.li>
+                );
+              })}
               <motion.li
                 className="mt-4"
                 initial={{ opacity: 0, x: -20 }}
@@ -145,7 +174,7 @@ export function Navbar() {
               >
                 <Link
                   href="/contact"
-                  className="block rounded-button bg-teal-600 px-5 py-4 text-center font-semibold text-white glow-teal"
+                  className="block rounded-button bg-teal-700 px-5 py-4 text-center font-semibold text-white glow-teal"
                   onClick={() => setMobileOpen(false)}
                 >
                   {SITE.ctaPrimary}

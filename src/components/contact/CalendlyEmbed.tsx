@@ -19,12 +19,12 @@ interface CalendlyEmbedProps {
 export function CalendlyEmbed({ url }: CalendlyEmbedProps) {
   if (!url) {
     return (
-      <div className="flex min-h-[600px] items-center justify-center rounded-card border border-navy-100 bg-background-soft p-8 text-center">
+      <div className="flex min-h-[600px] items-center justify-center rounded-card border border-[var(--color-border-strong)] bg-white/[0.03] p-8 text-center">
         <div>
-          <p className="font-display text-lg font-bold text-navy-500">
+          <p className="font-display text-lg font-bold text-white">
             Booking module loading
           </p>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-slate-400">
             The calendar will appear here once the scheduling link is configured.
           </p>
         </div>
@@ -33,7 +33,7 @@ export function CalendlyEmbed({ url }: CalendlyEmbedProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-card border border-navy-100">
+    <div className="overflow-hidden rounded-card border border-[var(--color-border-strong)] bg-white">
       <InlineWidget
         url={url}
         styles={{ height: "700px", width: "100%" }}

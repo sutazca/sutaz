@@ -22,6 +22,7 @@ export default function LabPage() {
       <section className="pt-32 pb-16 md:pt-40 md:pb-20">
         <div className="container-content">
           <SectionHeading
+            as="h1"
             eyebrow="The Engineering Lab"
             title="How We Build. Zero Risk. Guaranteed."
             subtitle="Every workflow is engineered in isolated sandboxes and shadow-tested before it ever touches your production data."

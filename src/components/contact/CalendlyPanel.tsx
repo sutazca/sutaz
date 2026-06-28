@@ -13,7 +13,7 @@ const CalendlyEmbed = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="min-h-[600px] animate-pulse rounded-card bg-background-soft" />
+      <div className="min-h-[600px] animate-pulse rounded-card bg-white/[0.03]" />
     ),
   },
 );

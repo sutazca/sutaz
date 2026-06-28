@@ -16,8 +16,16 @@ import "./globals.css";
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
+  // display:"swap" + preload:true + adjustFontFallback:true (default) → Fraunces
+  // is fetched high-priority and preloaded so it's ready at first paint, and the
+  // auto-generated fallback @font-face matches its metrics (both render 63px) so
+  // any swap is shift-free. (A residual CLS in the test env comes from the
+  // fallback's local("Times New Roman") resolving as a loading font on headless
+  // Chromium; the @font-face override in globals.css widens the local() candidate
+  // list to cover that.)
   display: "swap",
   axes: ["opsz", "SOFT", "WONK"],
+  preload: true,
 });
 
 const geist = Geist({

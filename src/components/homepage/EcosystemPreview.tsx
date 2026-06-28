@@ -2,16 +2,27 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Home, HardHat, BarChart3, ShoppingBag, Scale, LucideIcon } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { VERTICALS } from "@/lib/service-catalog";
+import { VERTICALS, TOTAL_SERVICES } from "@/lib/service-catalog";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 /**
- * EcosystemPreview — now pulls from the real service catalog (5 verticals).
- * Glass cards with hover lift, mono service counts, accent borders.
+ * EcosystemPreview — pulls the 5 verticals from the real service catalog.
+ * Glass cards with hover lift, mono service counts, lucide line icons (P5:
+ * emoji replaced with line icons consistent with the rest of the site),
+ * per-vertical colored icon chip + top border band. Count is computed
+ * (TOTAL_SERVICES) so copy can never drift.
  */
+const VERTICAL_ICONS: Record<string, LucideIcon> = {
+  "real-estate": Home,
+  construction: HardHat,
+  "marketing-agencies": BarChart3,
+  "e-commerce": ShoppingBag,
+  "professional-services": Scale,
+};
+
 export function EcosystemPreview() {
   return (
     <section className="relative py-24 md:py-32">
@@ -19,12 +30,13 @@ export function EcosystemPreview() {
         <SectionHeading
           eyebrow="Built For Your Industry"
           title="Five specialized vertical ecosystems"
-          subtitle="Purpose-built automation engines for Canadian industries that can't afford downtime. 120+ engineered services across Real Estate, Construction, Marketing, E-Commerce, and Professional Services."
+          subtitle={`Purpose-built automation engines for Canadian industries that can't afford downtime. ${TOTAL_SERVICES} engineered services across Real Estate, Construction, Marketing, E-Commerce, and Professional Services.`}
         />
 
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {VERTICALS.map((v, i) => {
             const moatCount = v.services.filter((s) => s.moat).length;
+            const Icon = VERTICAL_ICONS[v.id] ?? BarChart3;
             return (
               <motion.div
                 key={v.id}
@@ -36,11 +48,20 @@ export function EcosystemPreview() {
                 <Link
                   href={`/services#${v.id}`}
                   className="group relative flex h-full flex-col overflow-hidden rounded-card glass-card p-7 transition-all hover:-translate-y-1"
-                  style={{ borderTop: `2px solid ${v.borderColor}` }}
+                  style={{ borderTop: `3px solid ${v.borderColor}` }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-3xl">{v.emoji}</span>
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
+                    <span
+                      className="flex h-11 w-11 items-center justify-center rounded-xl ring-1 ring-inset"
+                      style={{
+                        backgroundColor: v.color + "22",
+                        color: v.borderColor,
+                        borderColor: v.borderColor + "55",
+                      }}
+                    >
+                      <Icon size={22} aria-hidden />
+                    </span>
+                    <span className="rounded-full bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-slate-400 ring-1 ring-inset ring-white/10">
                       Phase {v.phase}
                     </span>
                   </div>
@@ -50,7 +71,7 @@ export function EcosystemPreview() {
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-400">
                     {v.blurb}
                   </p>
-                  <div className="mt-5 flex items-center gap-4 border-t border-white/5 pt-4 font-mono text-xs text-slate-500">
+                  <div className="mt-5 flex items-center gap-4 border-t border-[var(--color-border-strong)] pt-4 font-mono text-xs text-slate-400">
                     <span><span className="font-bold text-white">{v.services.length}</span> services</span>
                     <span><span className="font-bold text-teal-400">{moatCount}</span> moat</span>
                   </div>
@@ -69,7 +90,7 @@ export function EcosystemPreview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-15%" }}
             transition={{ duration: 0.6, delay: VERTICALS.length * 0.08, ease }}
-            className="flex flex-col justify-center rounded-card bg-teal-600 p-7 text-white glow-teal"
+            className="flex flex-col justify-center rounded-card bg-gradient-to-br from-teal-700 to-teal-800 p-7 text-white glow-teal"
           >
             <p className="font-mono text-xs uppercase tracking-widest text-teal-100">
               Not sure which fits?
