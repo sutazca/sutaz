@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Plus } from "lucide-react";
 import { FAQ_ITEMS } from "@/lib/content";
 import { cn } from "@/lib/utils";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 
 export function FaqAccordion() {
   const [open, setOpen] = useState<number | null>(0);
@@ -47,7 +48,7 @@ export function FaqAccordion() {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
                   className="overflow-hidden"
                 >
                   <p className="px-6 pb-6 text-slate-400">{item.answer}</p>

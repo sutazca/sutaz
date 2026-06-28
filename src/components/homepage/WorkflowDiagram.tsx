@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { FileInput, Cpu, Route, BellRing } from "lucide-react";
+import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
  * WorkflowDiagram — hero supporting visual.
@@ -18,8 +19,6 @@ const NODES = [
   { icon: Route, label: "Route", detail: "Cost codes · Agent maps", tone: "slate" as const },
   { icon: BellRing, label: "Notify", detail: "SMS · Slack · CRM", tone: "teal" as const },
 ];
-
-const ease = [0.16, 1, 0.3, 1] as const;
 
 export function WorkflowDiagram() {
   const [mounted, setMounted] = useState(false);

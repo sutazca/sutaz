@@ -9,6 +9,7 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { TextFlip } from "@/components/ui/text-flip";
 import { AnimatedArrow } from "@/components/ui/animated-arrow";
 import { SITE, HERO } from "@/lib/content";
+import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
  * HeroSection — Engineering-Luxury.
@@ -20,7 +21,6 @@ import { SITE, HERO } from "@/lib/content";
  * Layout: left editorial copy (headline + subhead + CTA + trust strip + stats);
  * right column = supporting WorkflowDiagram + live ROI "terminal".
  */
-const ease = [0.16, 1, 0.3, 1] as const;
 
 // Stat figures are all blueprint-sourced (see src/lib/content.ts citations):
 // 120s lead response, 99.8% parse precision, 30-day rollout.

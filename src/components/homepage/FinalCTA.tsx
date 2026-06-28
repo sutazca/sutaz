@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { SITE, CONTACT_COPY } from "@/lib/content";
+import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
  * FinalCTA — homepage closing conversion band (before the footer).
@@ -12,7 +13,6 @@ import { SITE, CONTACT_COPY } from "@/lib/content";
  * conversion close. Body copy is verbatim (Blueprint Doc Section 3, Page 3).
  * Teal-gradient panel + primary CTA. SSR-safe entrance animation.
  */
-const ease = [0.16, 1, 0.3, 1] as const;
 
 export function FinalCTA() {
   const [mounted, setMounted] = useState(false);

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/lib/content";
 import { cn } from "@/lib/utils";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 import { SutazLogo } from "@/components/brand/Logo";
 
 /**
@@ -46,7 +47,7 @@ export function Navbar() {
     <motion.header
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled

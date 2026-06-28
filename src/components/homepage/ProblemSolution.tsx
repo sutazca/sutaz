@@ -4,8 +4,7 @@ import { motion } from "motion/react";
 import { AlertTriangle, CheckCircle2, ArrowRight } from "lucide-react";
 import { PAIN_CURE_PAIRS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-
-const ease = [0.16, 1, 0.3, 1] as const;
+import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
  * ProblemSolution — pain/cure pairs restyled to the luxury-dark language (P4).

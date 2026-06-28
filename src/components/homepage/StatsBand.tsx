@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
  * StatsBand — homepage social-proof strip between hero and ProblemSolution.
@@ -12,7 +13,6 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
  *  - 30-day deterministic rollout (Master Blueprint Section 3)
  *  - 4 isolated build phases (Lab phases — LAB_PHASES length)
  */
-const ease = [0.16, 1, 0.3, 1] as const;
 
 interface StatItem {
   value: number;

@@ -6,8 +6,7 @@ import { ArrowRight, Home, HardHat, BarChart3, ShoppingBag, Scale, LucideIcon } 
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { VERTICALS, TOTAL_SERVICES } from "@/lib/service-catalog";
-
-const ease = [0.16, 1, 0.3, 1] as const;
+import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
  * EcosystemPreview — pulls the 5 verticals from the real service catalog.

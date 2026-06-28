@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Children, useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 
 /**
  * TextFlip — rotating word carousel.
@@ -34,7 +35,7 @@ export function TextFlip({
   className,
   children,
   interval = 2.2,
-  transition = { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+  transition = { duration: 0.3, ease: EASE_OUT_EXPO },
   variants = defaultVariants,
 }: TextFlipProps) {
   const [currentIndex, setCurrentIndex] = useState(0);

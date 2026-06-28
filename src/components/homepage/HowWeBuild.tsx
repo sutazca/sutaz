@@ -5,13 +5,13 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { LAB_PHASES } from "@/lib/content";
+import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
  * HowWeBuild — homepage section promoting the /lab page.
  * Renders the verbatim LAB_PHASES (Master Blueprint Section 3) as a dark-themed
  * horizontal 4-step timeline with glass nodes. CTA links to the full /lab page.
  */
-const ease = [0.16, 1, 0.3, 1] as const;
 
 export function HowWeBuild() {
   return (

@@ -27,7 +27,10 @@
   --color-teal-200: #99f6e4;
   --color-teal-300: #5eead4;
   --color-teal-400: #2dd4bf;
-  --color-teal-500: #0f766e;
+  --color-teal-500: #14b8a6; /* v2: was #0f766e — COLLIDED with teal-700.
+                              * Canonical Tailwind teal scale: 500 brightens
+                              * above 600 (#0d9488) and 700 (#0f766e, unchanged).
+                              * WCAG white-on-teal-700 CTA (5.47:1) uses 700, unchanged. */
   --color-teal-600: #0d9488;
   --color-teal-700: #0f766e;
   --color-teal-800: #115e59;
@@ -78,6 +81,9 @@
   --text-6xl: 3.75rem;    /* 60px */
   --text-7xl: 4.5rem;     /* 72px */
 
+  /* ── Display (hero h1) — §4.3 premium scale ── */
+  --text-display: clamp(3rem, 8vw, 7.5rem); /* ~120px hero h1 */
+
   /* ── Typography ── */
   --font-display: var(--font-display), Georgia, serif;
   --font-body: var(--font-body), system-ui, sans-serif;
@@ -104,18 +110,22 @@
   }
 
   body {
-    background-color: var(--color-navy-500);
+    background-color: #0a0e1a; /* v2 §5: deepen page base toward near-black premium dark
+                                * (was var(--color-navy-500) #0f172a). Did NOT change the
+                                * --color-navy-500 token because text-navy-500 is used as a
+                                * light accent in error.tsx, not-found.tsx, layout.tsx,
+                                * PhaseTimeline.tsx — deepening the token would darken those. */
     color: rgb(203 213 225); /* slate-300 — passes AA on navy, readable body */
     font-family: var(--font-body);
     font-size: 1rem;
-    line-height: 1.6; /* ui-ux-pro-max: body 1.5-1.6 */
+    line-height: 1.65; /* v2 §4.3: nudge 1.6 → 1.65 (reference runs 1.6–1.8) */
     font-feature-settings: "ss01", "cv01", "cv03";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     background-image:
       radial-gradient(ellipse 80% 50% at 50% -10%, rgb(13 148 136 / 0.08), transparent 60%),
-      linear-gradient(to bottom, var(--color-navy-500), var(--color-navy-700));
+      linear-gradient(to bottom, #0a0e1a, var(--color-navy-800)); /* v2 §5: was navy-500→navy-700; deepened to #0a0e1a→navy-800 (#070b13) */
     background-attachment: fixed;
     min-height: 100vh;
   }
@@ -220,6 +230,26 @@
      * CLS is handled by the @font-face fallback override below. */
   }
 
+  /* Hero display headline — §4.3 premium scale (~120px). Uses --text-display clamp.
+   * Kept separate from .text-display so existing users keep their 1.05 line-height. */
+  .text-display-hero {
+    font-family: var(--font-display), Georgia, "Times New Roman", serif;
+    font-size: var(--text-display);
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 144;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* §4.1 editorial rhythm — defined here; applied to sections in Phase 3/6. */
+  .section-pad {
+    padding-block: clamp(6rem, 12vw, 10rem); /* ~pt-40 pb-28 scale, breathing room */
+  }
+  .section-gap {
+    margin-block: clamp(5rem, 10vw, 7.5rem); /* gap-20 → gap-32 editorial spacing */
+  }
+
   /* Gradient text accent (teal → teal-300) */
   .text-gradient-teal {
     background: linear-gradient(135deg, var(--color-teal-300), var(--color-teal-500));
@@ -234,7 +264,14 @@
     background: linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(255 255 255 / 0.01)),
                 #131a2e;
     border: 1px solid var(--color-border-strong);
-    box-shadow: var(--shadow-card);
+    /* v2 §4.6: inner-glow ring + brighter top-light hairline so depth reads on
+     * the 4-tier stack (page < .surface-recessed < .glass-card < .card-moat).
+     * Inlined from --shadow-card (which other surfaces share) + a faint ring.
+     * Deliberately one extra layer — depth, not busy noise. */
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.06) inset,   /* top-light hairline (brightened from .04) */
+      0 0 0 1px rgb(255 255 255 / 0.02) inset,   /* faint inner-glow ring */
+      0 8px 24px -12px rgb(0 0 0 / 0.6);         /* drop shadow (from --shadow-card) */
     backdrop-filter: blur(16px) saturate(120%);
     transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   }
