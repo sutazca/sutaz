@@ -98,7 +98,7 @@ export function HeroROICalculator() {
         <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
       </a>
 
-      <p className="mt-4 text-xs leading-relaxed text-slate-600">
+      <p className="mt-4 text-xs leading-relaxed text-slate-500">
         Estimates use mid-range build fees and assume automation recovers 80% of
         wasted time. Figures are illustrative; your audit gives exact numbers.
       </p>
