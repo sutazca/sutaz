@@ -63,6 +63,12 @@ export function HeroSection() {
           aria-hidden
           className="hero-video absolute inset-0 h-full w-full"
         >
+          {/* Source order per web.dev: WebM (VP9) first — Firefox decodes VP9
+              natively (no OS-codec dependency); H.264 High profile can't decode
+              in headless/Linux Firefox (NS_ERROR_PARSED_DATA_CACHED). MP4 stays
+              as the Safari fallback (Safari has no WebM support). Verified root
+              cause + fix 2026-06-29 via Mozilla docs + Bugzilla #1130450. */}
+          <source src="/hero/orb.webm" type="video/webm" />
           <source src="/hero/orb.mp4" type="video/mp4" />
         </video>
       )}
