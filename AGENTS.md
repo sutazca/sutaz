@@ -67,23 +67,37 @@ If the user references SutazAI, verify which machine/project is meant first.
 
 This project has real browser E2E via Playwright + axe-core:
 - `@playwright/test@1.61.1` + `@axe-core/playwright@4.12.1` (devDependencies)
-- Chromium + Firefox + WebKit headless browsers installed
-- Tests in `e2e/` — run against a **production build** (`next start`), NOT the
-  dev server (Turbopack dev can't sustain parallel test load and times out).
+- Chromium + Firefox + WebKit headless browsers installed (run `npx playwright
+  install firefox webkit && npx playwright install-deps` once per environment)
+- Tests in `e2e/` — run against a **production build served by the standalone
+  server**, NOT the dev server (Turbopack dev can't sustain parallel test load
+  and times out).
 
 How to run E2E (real, end-to-end):
 ```bash
-# 1. Build production bundle (webpack — Turbopack crashes on Tailwind v4 CSS)
-node node_modules/next/dist/bin/next build --webpack
-# 2. Serve it
-PORT=3999 node node_modules/next/dist/bin/next start -p 3999 &
-# 3. Run the suite (functional + WCAG 2.2 AA accessibility + perf + cross-browser)
-node node_modules/@playwright/test/cli.js test
+# One command — builds, serves the standalone server, runs the full 130-test
+# suite (chromium + firefox + webkit + mobile-chrome), cleans up:
+pnpm e2e:full
+# (or: bash scripts/run-e2e-local.sh)
 ```
 
-Known gotcha (verified): the standalone `server.js` output can serve a stale
-render even after a fresh build — prefer `next start` for testing because it
-reads the canonical `.next` directory directly.
+CRITICAL — `next start` is INCOMPATIBLE with this project (verified 2026-06-28):
+`next.config.ts` sets `output: "standalone"`. `next start` boots and serves
+static pages, but **every route handler hangs** (the server itself logs:
+`"next start" does not work with "output: standalone" — use
+node .next/standalone/server.js`). The 130-test "all green" commit b4432f5 was a
+FALSE PASS — its `e2e:setup` used `next start`, so all `/api/*` tests hung.
+The fix: serve via `node .next/standalone/server.js` (see
+`scripts/serve-standalone.sh`). Confirmed: 130/130 pass under the standalone
+server, 0/130 of the API tests pass under `next start`.
+
+WSL dev note (verified 2026-06-28): run the suite from the **native** WSL
+checkout (`~/projects/sutaz.ca` in the `sutaz-ca` distro), NOT the `/mnt/c`
+mount — the 9p mount breaks pnpm symlinks (no top-level `node_modules/next`)
+and `next build` can't resolve. Also: do NOT background the suite with `setsid
+nohup` from a `wsl.exe -c` one-shot — the distro tears down background
+processes when its last session closes. Run synchronously in the foreground
+(`pnpm e2e:full`) with a generous timeout.
 
 # Role (applies to ALL work in this workspace)
 
@@ -151,14 +165,69 @@ paths/facts against the actual SutazAI environment when working on it.
 23. Attention budget discipline — keep memory and prompts tight; verbose ≠
     better.
 
-# Tooling reality (this session)
+# Tooling reality (this session) — updated 2026-06-28
 
-- I do NOT have ChromeDev / Stack Overflow / Tavily MCPs in this workspace.
-  Use WebSearch + webReader (fetch official docs) + Bash (reaches the NAS via
-  SSH at 192.168.100.250, key-based auth works) + direct file tools.
+**IMPORTANT — verify MCP availability per session, do NOT assume.** The presence
+of MCP tools depends on the ZCode MCP server config actually loading. Check for
+the `mcp__<name>__*` tool prefixes at the start of any task that needs them. If
+absent, see the setup record below before claiming a capability is missing.
+
+## Research MCPs (installed 2026-06-28 in `~/.zcode/cli/config.json` → `mcp.servers`)
+
+Boot-verified with a real MCP `initialize` handshake (no mocks). All run as local
+stdio child processes of ZCode on THIS Windows machine (Node v24.18.0).
+
+- **`chrome-devtools`** (`mcp__chrome-devtools__*`) — Chrome DevTools MCP v1.4.0,
+  30 tools: navigate/snapshot/screenshot, console + network inspection, perf trace,
+  Lighthouse. Source: github.com/ChromeDevTools/chrome-devtools-mcp.
+- **`stackoverflow`** (`mcp__stackoverflow__*`) — StackOverflow.MCPServer
+  v2025.12.4.484 via `mcp-remote https://mcp.stackoverflow.com`. Official beta by
+  Stack Exchange. NOTE: actual tool *calls* trigger OAuth (browser, 1st run) —
+  the user completes consent/captcha, not the agent. Source: api.stackexchange.com/docs/mcp-server.
+- **`deepwiki`** (`mcp__deepwiki__*`) — DeepWiki v2.14.3 via
+  `mcp-remote https://mcp.deepwiki.com/mcp`. Tools: `read_wiki_structure`,
+  `read_wiki_contents`, `ask_question` for any PUBLIC GitHub repo. No key needed
+  for public repos. Source: docs.devin.ai/work-with-devin/deepwiki-mcp.
+
+## Key-bearing MCPs (added via ZCode UI Settings → MCP, User scope)
+
+- **`tavily`** (`mcp__tavily__*`) — web search/extraction/crawl. tavily-mcp
+  v0.2.20, **boot-verified 2026-06-28** with a real `tavily_search` call
+  (returned live nextjs.org/blog/next-15 content; key valid). 5 tools use
+  UNDERSCORE names: `tavily_search`, `tavily_extract`, `tavily_crawl`,
+  `tavily_map`, `tavily_research` (NOT hyphenated). Needs `TAVILY_API_KEY`
+  in env block (user adds via ZCode UI).
+- **`context7`** (`mcp__context7__*`) — up-to-date library/framework docs
+  (Context7 v3.2.2). Tools: `resolve-library-id`, `query-docs`. Env var name is
+  `CONTEXT7_API_KEY` (NOT `CTX7_API_KEY` — that .env name holds the *value*, the
+  official name differs). Anonymous mode works; key raises rate limits.
+  Source: github.com/upstash/context7.
+
+## Fallbacks (always available, no config)
+
+- `WebSearch` (built-in) + `mcp__web_reader__webReader` (fetch official docs) +
+  Bash (reaches the NAS via SSH at 192.168.100.250, key-based auth works) +
+  direct file tools.
+
+## Source-priority rule (unchanged, applies to all research)
+
+official framework docs > canonical registries (npm) > Stack Overflow > arXiv >
+Google/DuckDuckGo. Do not treat unofficial blogs as primary sources.
+
+## NAS access (unchanged)
+
 - For the NAS: `ssh -o BatchMode=yes root@192.168.100.250`. Docker binary is at
   `/usr/local/bin/docker`. Cert API (`synowebapi`) returns error 103 from CLI —
   unreliable; use acme.sh + manual deploy instead.
+
+## Where MCPs are configured (do NOT edit `~/.mcp.json` — it's a Claude-Code file)
+
+- **User/global (all workspaces):** `~/.zcode/cli/config.json` → key `mcp.servers`
+- **Workspace (this project only):** `<project>/.zcode/config.json` → `mcp.servers`
+- Rule: within a scope, if `.zcode` has any servers, `.agents/mcp.json` is skipped
+  (no merge). UI edits always write to `.zcode`. Backups: `config.json.bak.*`.
+- `~/.mcp.json` is NOT read by ZCode (verified: its `code-review-graph` entry does
+  not load this session). Official doc: https://zcode.z.ai/cn/docs/mcp-services.
 
 # NAS live state (verified 2026-06-28)
 
