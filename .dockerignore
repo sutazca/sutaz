@@ -8,6 +8,10 @@ node_modules
 .env*
 !.env.example
 Dockerfile
+# corepack auto-generates this stub with placeholder text; if present it makes
+# pnpm treat the project as a workspace and the build fails ("packages field
+# missing or empty"). Exclude it.
+pnpm-workspace.yaml
 docker-compose*.yml
 .DS_Store
 .vscode
