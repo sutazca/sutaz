@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
 import { HeroROICalculator } from "@/components/homepage/ROICalculator";
 import { WorkflowDiagram } from "@/components/homepage/WorkflowDiagram";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { TextFlip } from "@/components/ui/text-flip";
+import { AnimatedArrow } from "@/components/ui/animated-arrow";
 import { SITE, HERO } from "@/lib/content";
 
 /**
@@ -77,7 +78,14 @@ export function HeroSection() {
             className="text-display mt-6 max-w-[15ch] text-white text-[clamp(2.75rem,6vw,5rem)]"
           >
             We engineer{" "}
-            <span className="text-gradient-teal">enterprise-grade workflows</span>{" "}
+            <span className="text-gradient-teal">
+              <TextFlip interval={2.4}>
+                workflows
+                <span className="text-gradient-teal">ecosystems</span>
+                <span className="text-gradient-teal">pipelines</span>
+                <span className="text-gradient-teal">agents</span>
+              </TextFlip>
+            </span>{" "}
             that permanently eliminate your team&apos;s admin bottlenecks.
           </motion.h1>
 
@@ -94,7 +102,7 @@ export function HeroSection() {
               className="group inline-flex min-h-[44px] items-center justify-center gap-2 rounded-button bg-teal-700 px-7 py-4 text-base font-semibold text-white transition-all hover:bg-teal-600 glow-always"
             >
               {SITE.ctaPrimary}
-              <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              <AnimatedArrow className="transition-transform group-hover:translate-x-1" />
             </Link>
             <span className="flex items-center gap-2 text-sm text-slate-400">
               <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />

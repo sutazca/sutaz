@@ -142,6 +142,7 @@
     letter-spacing: -0.02em; /* ui-ux-pro-max: display tighter */
     line-height: 1.15;
     color: rgb(255 255 255);
+    font-variant-numeric: tabular-nums; /* stable digit width (agentcn) */
   }
 
   p { max-width: 65ch; } /* ui-ux-pro-max: body 65-75ch optimal */
@@ -287,7 +288,10 @@
   .glow-teal:hover { box-shadow: var(--shadow-glow); }
   .glow-always { box-shadow: var(--shadow-glow); }
 
-  /* Hero vibrant backdrop — intensified teal so glass + glow refract color (P2) */
+  /* Hero vibrant backdrop — intensified teal so glass + glow refract color (P2).
+   * Layer 1 (static) = radial teal + indigo auras. Layer 2 (.hero-aura::before)
+   * = a slow-rotating conic-gradient (Stripe/RunwayML cinematic depth), heavily
+   * blurred + ~6% opacity to preserve WCAG AA contrast. */
   .hero-aura {
     position: absolute;
     inset: 0;
@@ -298,6 +302,24 @@
       radial-gradient(48% 44% at 12% 22%, rgb(99 102 241 / 0.14), transparent 70%),
       radial-gradient(40% 30% at 50% 100%, rgb(13 148 136 / 0.08), transparent 70%);
     filter: blur(10px);
+  }
+  .hero-aura::before {
+    content: "";
+    position: absolute;
+    inset: -25%;
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      rgb(13 148 136 / 0.0),
+      rgb(13 148 136 / 0.10),
+      rgb(99 102 241 / 0.06),
+      rgb(13 148 136 / 0.0)
+    );
+    filter: blur(60px);
+    opacity: 0.6;
+    animation: hero-aura-spin 40s linear infinite;
+  }
+  @keyframes hero-aura-spin {
+    to { transform: rotate(360deg); }
   }
 
   /* Prose helper for long-form sections */

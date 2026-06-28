@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight, Home, HardHat, BarChart3, ShoppingBag, Scale, LucideIcon } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { VERTICALS, TOTAL_SERVICES } from "@/lib/service-catalog";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -50,6 +51,13 @@ export function EcosystemPreview() {
                   className="group relative flex h-full flex-col overflow-hidden rounded-card glass-card p-7 transition-all hover:-translate-y-1"
                   style={{ borderTop: `3px solid ${v.borderColor}` }}
                 >
+                  {/* Cursor-tracking spotlight (Linear/Vercel dark-card effect) */}
+                  <SpotlightCard
+                    className="absolute inset-0"
+                    spotlightColor={v.color + "22"}
+                  >
+                    <span className="sr-only">highlight</span>
+                  </SpotlightCard>
                   <div className="flex items-center justify-between">
                     <span
                       className="flex h-11 w-11 items-center justify-center rounded-xl ring-1 ring-inset"
