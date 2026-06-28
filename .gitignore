@@ -19,6 +19,9 @@
 
 # personal reference images (not project assets)
 /New folder/
+# scratch dirs for frame extraction / preview rendering (never ship)
+/.frames/
+/.preview/
 
 # corepack-generated workspace stub (placeholder content, not meaningful)
 /pnpm-workspace.yaml

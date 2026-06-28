@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/lib/content";
 import { cn } from "@/lib/utils";
+import { SutazLogo } from "@/components/brand/Logo";
 
 /**
  * Navbar — Engineering-Luxury.
@@ -57,25 +58,14 @@ export function Navbar() {
         className="container-content flex h-16 items-center justify-between md:h-20"
         aria-label="Primary"
       >
-        {/* Logo — wordmark with monospace accent */}
-        <Link
+        {/* Logo — Engineered S monogram + wordmark (brand/Logo.tsx) */}
+        <SutazLogo
           href="/"
+          variant="lockup"
+          eyebrow
+          size="md"
           onClick={() => setMobileOpen(false)}
-          className="group flex items-center gap-2.5"
-          aria-label={`${SITE.name} home`}
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-button bg-teal-700 font-display text-sm font-bold text-white transition-transform group-hover:scale-105 glow-teal">
-            S
-          </span>
-          <span className="flex flex-col leading-none">
-            <span className="font-display text-base font-bold tracking-tight text-white">
-              {SITE.name}
-            </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-teal-400">
-              automation
-            </span>
-          </span>
-        </Link>
+        />
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-1 md:flex">

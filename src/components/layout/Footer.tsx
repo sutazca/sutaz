@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SITE } from "@/lib/content";
+import { SutazLogo } from "@/components/brand/Logo";
 
 export function Footer() {
   const pathname = usePathname();
@@ -13,12 +14,7 @@ export function Footer() {
     <footer className="relative border-t border-[var(--color-border-strong)] bg-navy-800">
       <div className="container-content grid gap-10 py-16 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-button bg-teal-600 font-display text-sm font-bold text-white">
-              S
-            </span>
-            <span className="font-display text-base font-bold text-white">{SITE.name}</span>
-          </div>
+          <SutazLogo href="/" variant="lockup" size="md" />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
             Enterprise-grade workflow automation engineered for Canadian Real
             Estate, Construction, Marketing, E-Commerce, and Professional Services.
