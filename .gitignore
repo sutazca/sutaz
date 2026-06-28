@@ -19,9 +19,12 @@
 
 # personal reference images (not project assets)
 /New folder/
+# owner's raw imagery source folder (~120MB) — originals; graded copies ship via public/
+/pictures/
 # scratch dirs for frame extraction / preview rendering (never ship)
 /.frames/
 /.preview/
+/scripts/tmp/
 
 # corepack-generated workspace stub (placeholder content, not meaningful)
 /pnpm-workspace.yaml

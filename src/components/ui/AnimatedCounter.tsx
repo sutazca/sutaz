@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate, useInView } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 interface AnimatedCounterProps {
   value: number;
@@ -9,33 +10,6 @@ interface AnimatedCounterProps {
   format?: (n: number) => string;
   duration?: number;
   className?: string;
-}
-
-const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
-
-const subscribeReducedMotion = (cb: () => void) => {
-  if (typeof window === "undefined") return () => {};
-  const mq = window.matchMedia(reducedMotionQuery);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-};
-
-const getReducedMotionSnapshot = (): boolean =>
-  typeof window !== "undefined" &&
-  window.matchMedia(reducedMotionQuery).matches;
-
-const getServerSnapshot = (): boolean => false;
-
-/**
- * Detect prefers-reduced-motion via useSyncExternalStore (SSR-safe, no
- * setState-in-effect — the canonical way to subscribe to a media query).
- */
-function usePrefersReducedMotion(): boolean {
-  return useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotionSnapshot,
-    getServerSnapshot,
-  );
 }
 
 /**

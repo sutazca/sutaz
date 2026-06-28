@@ -15,7 +15,16 @@ import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 export function HowWeBuild() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative overflow-hidden py-24 md:py-32">
+      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic hand + CRT */}
+      <img
+        src="/sections/how-we-build-graded.jpg"
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="section-media pointer-events-none absolute inset-0 h-full w-full"
+      />
+      <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <SectionHeading
           eyebrow="How We Build"

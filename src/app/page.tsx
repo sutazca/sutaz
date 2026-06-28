@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/homepage/HeroSection";
+import { HeroProof } from "@/components/homepage/HeroProof";
 import { StatsBand } from "@/components/homepage/StatsBand";
 import { ProblemSolution } from "@/components/homepage/ProblemSolution";
 import { HowWeBuild } from "@/components/homepage/HowWeBuild";
@@ -9,8 +10,8 @@ import { SITE } from "@/lib/content";
 
 /**
  * Homepage — blueprint Section 6. The conversion engine.
- * Section order: Hero (50/50 + workflow diagram + ROI calc) → StatsBand →
- * ProblemSolution → HowWeBuild → EcosystemPreview → FAQ → FinalCTA.
+ * Section order: Hero (full-bleed orb, §4.2) → HeroProof (relocated diagram +
+ * ROI) → StatsBand → ProblemSolution → HowWeBuild → EcosystemPreview → FAQ → FinalCTA.
  */
 export default function HomePage() {
   const organizationJsonLd = {
@@ -32,6 +33,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <HeroProof />
       <StatsBand />
       <ProblemSolution />
       <HowWeBuild />

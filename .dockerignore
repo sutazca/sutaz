@@ -20,3 +20,9 @@ coverage
 *.log
 npm-debug.log*
 .pnpm-store
+
+# Owner's raw imagery source folder (~120MB) + misc — originals live in public/
+# after the duotone-grade pass. Excluding here keeps the Docker build context lean.
+pictures
+New folder
+scripts/tmp

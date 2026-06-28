@@ -25,7 +25,16 @@ const VERTICAL_ICONS: Record<string, LucideIcon> = {
 
 export function EcosystemPreview() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative overflow-hidden py-24 md:py-32">
+      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded ship bridge controls */}
+      <img
+        src="/sections/ecosystems-graded.jpg"
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="section-media pointer-events-none absolute inset-0 h-full w-full"
+      />
+      <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <SectionHeading
           eyebrow="Built For Your Industry"

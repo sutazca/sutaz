@@ -24,7 +24,16 @@ export function FAQSection() {
   };
 
   return (
-    <section id="faq" className="scroll-mt-20 py-20 md:py-24">
+    <section id="faq" className="relative scroll-mt-20 overflow-hidden py-20 md:py-24">
+      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic components */}
+      <img
+        src="/sections/atmosphere-graded.jpg"
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="section-media pointer-events-none absolute inset-0 h-full w-full"
+      />
+      <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <SectionHeading
           eyebrow="FAQ"

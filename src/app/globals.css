@@ -361,6 +361,38 @@
 
   /* Prose helper for long-form sections */
   .prose-narrow { max-width: 65ch; }
+
+  /* Full-bleed media layer (Phase 3 §4.2 / §4.4 imagery). Reusable recipe for
+   * the hero <video>/<img> and section <img> backgrounds — matches the
+   * .hero-aura convention: absolute, inset-0, pointer-events-none (set in
+   * markup), object-covered. Keeps decorative media from stretching. */
+  .hero-video {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* WCAG scrim over full-bleed imagery. Darkens so white copy holds ≥4.5:1.
+   * Hero scrim: lighter at center (lets the orb glow breathe), near-black at
+   * edges. Section scrim: heavier + flatter (sections carry denser text).
+   * Contrast verified by axe in the E2E gate, not by eye. */
+  .hero-scrim {
+    background:
+      radial-gradient(120% 90% at 50% 45%, rgb(10 14 26 / 0.35), rgb(10 14 26 / 0.72) 70%, rgb(10 14 26 / 0.90) 100%);
+    pointer-events: none;
+  }
+  .section-scrim {
+    background:
+      linear-gradient(180deg, rgb(10 14 26 / 0.82), rgb(10 14 26 / 0.80) 40%, rgb(10 14 26 / 0.88));
+    pointer-events: none;
+  }
+
+  /* Atmospheric imagery layer helper — the <img>/background that sits behind
+   * section content at z-0. object-covered + a subtle scale to avoid edge
+   * seams on the duotone-graded JPGs. */
+  .section-media {
+    object-fit: cover;
+    object-position: center;
+  }
 }
 
 /*

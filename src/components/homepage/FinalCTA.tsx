@@ -19,7 +19,16 @@ export function FinalCTA() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative overflow-hidden py-24 md:py-32">
+      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded industrial control room */}
+      <img
+        src="/sections/final-cta-graded.jpg"
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="section-media pointer-events-none absolute inset-0 h-full w-full"
+      />
+      <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <motion.div
           initial={mounted ? { opacity: 0, y: 24 } : false}

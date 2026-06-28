@@ -29,7 +29,16 @@ const STATS: StatItem[] = [
 
 export function StatsBand() {
   return (
-    <section className="relative py-10">
+    <section className="relative overflow-hidden py-10">
+      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic-arm band */}
+      <img
+        src="/sections/stats-graded.jpg"
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="section-media pointer-events-none absolute inset-0 h-full w-full"
+      />
+      <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <div className="divider-glow" aria-hidden />
         <motion.div
