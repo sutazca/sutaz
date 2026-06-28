@@ -67,7 +67,7 @@ If the user references SutazAI, verify which machine/project is meant first.
 
 This project has real browser E2E via Playwright + axe-core:
 - `@playwright/test@1.61.1` + `@axe-core/playwright@4.12.1` (devDependencies)
-- Chromium headless shell installed via `npx playwright install chromium`
+- Chromium + Firefox + WebKit headless browsers installed
 - Tests in `e2e/` — run against a **production build** (`next start`), NOT the
   dev server (Turbopack dev can't sustain parallel test load and times out).
 
@@ -77,10 +77,99 @@ How to run E2E (real, end-to-end):
 node node_modules/next/dist/bin/next build --webpack
 # 2. Serve it
 PORT=3999 node node_modules/next/dist/bin/next start -p 3999 &
-# 3. Run the suite (functional + WCAG 2.2 AA accessibility)
+# 3. Run the suite (functional + WCAG 2.2 AA accessibility + perf + cross-browser)
 node node_modules/@playwright/test/cli.js test
 ```
 
 Known gotcha (verified): the standalone `server.js` output can serve a stale
 render even after a fresh build — prefer `next start` for testing because it
 reads the canonical `.next` directory directly.
+
+# Role (applies to ALL work in this workspace)
+
+Act as Senior Systems Architect + Admin Engineer + Full-Stack Engineer + Data
+Scientist + DevOps. Use whatever languages this project needs (TypeScript,
+Rust, Python, Go, SQL, etc.). Verify official docs before writing any code.
+
+# Research workflow (the 6 steps — ALWAYS follow)
+
+1. **Research** — look up the official documentation before acting. Source
+   priority: official framework docs > canonical registries (npm) > Stack
+   Overflow > peer-reviewed (arXiv). Do not treat unofficial blogs as primary.
+2. **Cross-reference** — check any documented info against the actual codebase,
+   logs, and live state before acting.
+3. **Root cause** — find and fix the ROOT CAUSE. Never patch over a symptom,
+   never skip a bug. Cross-reference and fix properly.
+4. **Fix** — implement the verified solution.
+5. **Test** — no mocks. Test against the real implementation, real browser, real
+   data, real network. Build the harness if needed.
+6. **Deliver complete** — verify with real output before claiming done. No
+   "it works" without proof.
+
+# Memory state (23 entries — globally applied, verified sources)
+
+## SutazAI project context (SEPARATE machine — do NOT conflate with sutaz.ca)
+NOTE: SutazAI is a DIFFERENT project on a different machine (Dell R720 / Pi 5 /
+Hailo-10H NPU, docs at `/opt/sutazaiapp/docs/`). It is NOT this sutaz.ca
+Next.js site. If the user references SutazAI, verify which project/machine is
+meant before acting. Entries below are context the user has stated; verify
+paths/facts against the actual SutazAI environment when working on it.
+
+1. Chris Suta identity + role requirement (SutazAI owner)
+2. Infrastructure: Dell R720, WSL2, Pi 5, paths, blueprint version
+3. Full port registry for all 40+ services
+4. Tech stack: Python/Rust/Next.js, ISC singleton, HMAC auth
+5. Engineering rules + deploy order
+6. Brain Engine Rust DAG architecture
+7. Hailo-10H NPU critical constraints
+8. 8-layer AI system + agent security + feature gates
+9. All key service line counts + registry sizes
+
+## Global principles (verified against engineering research)
+10. Never speculate — always verify. Root causes only. No mocks. Real tests.
+11. Senior Architect + DevOps + Full-Stack role on every task.
+12. CodeRabbit 10/10 code standards — every language.
+13. Multi-language support — verify official docs before writing.
+14. 6-step workflow: research → cross-ref → root cause → fix → test → deliver.
+15. Just-in-time doc retrieval (Anthropic "Effective Context Engineering" Sept
+    2025) — load docs dynamically when relevant, not all upfront; avoids context
+    rot from the transformer's n² attention relationship.
+16. Structured task format — force clean INSTRUCTIONS / CONTEXT / TASK / OUTPUT
+    FORMAT separation on every complex task.
+17. Explicit uncertainty gate — hard stop before guessing: search first, answer
+    second. If unknown, say "unknown — need to verify."
+18. Fact-level memory granularity (MemX / LongMemEval, arXiv 2024-25) —
+    fact-level chunking doubles retrieval accuracy over session-level.
+19. Structured note-taking pattern (Anthropic Claude Code pattern) — track state
+    across long multi-step tasks via NOTES.md / progress log.
+20. Parallel Wave → Checkpoint → Wave — don't serialize independent work;
+    dispatch dedicated agent teams in parallel, checkpoint between waves.
+21. Output schema enforcement — every config, API response, report gets a schema
+    + a self-eval pass before delivery.
+22. Research source priority order — official docs > Stack Overflow > arXiv >
+    Google. No unofficial blogs as primary source.
+23. Attention budget discipline — keep memory and prompts tight; verbose ≠
+    better.
+
+# Tooling reality (this session)
+
+- I do NOT have ChromeDev / Stack Overflow / Tavily MCPs in this workspace.
+  Use WebSearch + webReader (fetch official docs) + Bash (reaches the NAS via
+  SSH at 192.168.100.250, key-based auth works) + direct file tools.
+- For the NAS: `ssh -o BatchMode=yes root@192.168.100.250`. Docker binary is at
+  `/usr/local/bin/docker`. Cert API (`synowebapi`) returns error 103 from CLI —
+  unreliable; use acme.sh + manual deploy instead.
+
+# NAS live state (verified 2026-06-28)
+
+- sutaz.ca reverse-proxy rule EXISTS + is correct: `sutaz.ca:443 → localhost:8093`
+  (rule UUID `8b20dd27-6d67-4664-b68e-b0df5936551f`)
+- The app container listens on `:8093` (docker-proxy)
+- BUG: the rule's cert folder serves `*.sutaz.synology.me`, NOT `sutaz.ca` →
+  SSL warning. Fix path: acme.sh DNS-01 → deploy to the cert folder → nginx reload.
+- DNS BUG: Namecheap has dual A-records — `83.24.21.107` (DEAD) + `83.24.0.20`
+  (live NAS). The dead IP causes ~20s timeout per request = "extremely slow."
+  Fix: delete the `83.24.21.107` A-record in Namecheap (GUI only).
+- acme.sh v3.1.4 installed at `/root/.acme.sh/acme.sh` on the NAS, default CA =
+  Let's Encrypt. Manual DNS mode flag:
+  `--yes-I-know-dns-manual-mode-enough-go-ahead-please`
