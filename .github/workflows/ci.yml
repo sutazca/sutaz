@@ -1,0 +1,49 @@
+# sutaz.ca — CI gate.
+# Mirrors the local deploy gate exactly: lint + production build + the full
+# Playwright suite via scripts/run-e2e-local.sh (standalone server on :3999).
+# Isolation from other repos' pipelines: this repo's deploy runs on the
+# dedicated [self-hosted, sutazca-nas] runner (see deploy.yml) — nothing shared.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable pnpm (version pinned to the repo's Docker toolchain)
+        run: corepack enable && corepack prepare pnpm@9.15.0 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+
+      - name: E2E gate (build + full suite against standalone server)
+        run: bash scripts/run-e2e-local.sh
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            /tmp/e2e-result.log
+            /tmp/e2e-server.log
+          retention-days: 7

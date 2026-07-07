@@ -1,0 +1,90 @@
+# sutaz.ca — deploy to the Synology NAS after a green CI run on main.
+#
+# Runs on the DEDICATED [self-hosted, sutazca-nas] runner (registered on the
+# NAS for this repo/org only) — fully isolated from other stacks' runners
+# (sutazstay-nas, sutazmail-nas) by label, concurrency group, stack path and
+# port, mirroring the verified multi-stack isolation pattern on this NAS.
+#
+# Mechanism = the same staging → atomic-swap → health flow as
+# scripts/deploy-nas.sh, executed locally on the NAS (the runner IS the NAS,
+# so no ssh hop): fetch the exact CI-tested SHA as a tarball, stage it,
+# preserve the prod .env + deploy snapshots, swap, compose build/up, probe.
+name: Deploy to NAS
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: [self-hosted, sutazca-nas]
+    timeout-minutes: 30
+    concurrency:
+      group: sutazca-nas-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Deploy ${{ github.event.workflow_run.head_sha }} to the sutazca stack
+        env:
+          STACK: /volume1/docker/sutazca
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          export PATH=/var/packages/ContainerManager/target/usr/bin:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
+          TS=$(date -u +%Y%m%dT%H%M%SZ)
+          STAGING="$STACK/.staging-$TS"
+
+          echo "== fetch ${SHA} tarball =="
+          curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/tarball/${SHA}" -o /tmp/sutazca-src.tgz
+          rm -rf "$STAGING" && mkdir -p "$STAGING"
+          tar xzf /tmp/sutazca-src.tgz -C "$STAGING" --strip-components=1
+          test -f "$STAGING/docker-compose.yml"
+          test ! -f "$STAGING/.env" || { echo ".env leaked into staging — ABORT"; exit 1; }
+
+          echo "== pre-deploy snapshot =="
+          SNAP="$STACK/.deploy-snapshots/pre-$TS"
+          mkdir -p "$SNAP"
+          docker images sutazca-app --format '{{.Repository}}:{{.Tag}} {{.ID}}' > "$SNAP/image-before.txt" || true
+          docker ps --filter name=sutazca --format '{{.Names}}|{{.Image}}|{{.Status}}' > "$SNAP/containers-before.txt" || true
+          cp -a "$STACK/docker-compose.yml" "$SNAP/" || true
+
+          echo "== atomic swap (preserve .env + snapshots + archives) =="
+          cp -a "$STACK/.env" "$STAGING/.env"
+          for d in "$STACK/.deploy-snapshots" "$STACK/archives" "$STACK/db"; do
+            [ -e "$d" ] && cp -a "$d" "$STAGING/" || true
+          done
+          PREV="$STACK.previous-$TS"
+          rm -rf "$PREV"
+          mv "$STACK" "$PREV"
+          mv "$STAGING" "$STACK"
+
+          cd "$STACK"
+          echo "== docker compose up -d --build =="
+          docker compose up -d --build 2>&1 | tail -20
+
+          echo "== wait for health =="
+          ok=0
+          for i in $(seq 1 40); do
+            if curl -sf --max-time 5 http://127.0.0.1:8093/ >/dev/null 2>&1; then ok=1; break; fi
+            sleep 3
+          done
+          docker ps --filter name=sutazca --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+          if [ "$ok" != 1 ]; then
+            echo "APP NOT HEALTHY — rolling back to $PREV"
+            docker compose logs --tail 40 app || true
+            docker compose down || true
+            RB="$STACK.failed-$TS"
+            mv "$STACK" "$RB"
+            mv "$PREV" "$STACK"
+            cd "$STACK" && docker compose up -d
+            exit 1
+          fi
+
+          echo "== keep only last 3 previous-deploy dirs =="
+          ls -1dt "$STACK".previous-* 2>/dev/null | tail -n +4 | xargs rm -rf 2>/dev/null || true
+          echo "== deploy ok =="
