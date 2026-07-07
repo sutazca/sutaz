@@ -68,6 +68,18 @@ test.describe("POST /api/leads", () => {
     const body = await res.json();
     expect(body.error).toBeTruthy();
   });
+
+  test("honeypot (website_url filled) → fake 201, nothing captured", async ({ request }) => {
+    // Bots fill the hidden field; the route pretends success WITHOUT touching
+    // the DB — proven here because a real insert attempt in this DB-less env
+    // would have returned 503 (see previous test).
+    const res = await request.post("/api/leads", {
+      data: { ...VALID_LEAD, website_url: "http://spam.example" },
+    });
+    expect(res.status()).toBe(201);
+    const body = await res.json();
+    expect(body.id).toBeNull();
+  });
 });
 
 // ─── /api/roi-calculate ────────────────────────────────────────────────────

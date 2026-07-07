@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { leadSchema, roiSchema } from "@/lib/validations";
+import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit";
 import { ROI_BOUNDS } from "@/types/roi";
 
 /**
@@ -111,5 +112,34 @@ test.describe("roiSchema — POST /api/roi-calculate validation", () => {
   test("optional source field accepted, defaults fine", () => {
     const r = roiSchema.safeParse({ ...VALID, source: "homepage" });
     expect(r.success).toBe(true);
+  });
+});
+
+test.describe("checkRateLimit — /api/leads abuse control", () => {
+  test.beforeEach(() => resetRateLimit());
+
+  test("allows up to max hits inside the window", () => {
+    const t0 = 1_000_000;
+    for (let i = 0; i < 5; i++) {
+      expect(checkRateLimit("ip-a", 5, 60_000, t0 + i * 1_000)).toBe(true);
+    }
+  });
+
+  test("blocks the hit after max inside the window", () => {
+    const t0 = 1_000_000;
+    for (let i = 0; i < 5; i++) checkRateLimit("ip-a", 5, 60_000, t0 + i);
+    expect(checkRateLimit("ip-a", 5, 60_000, t0 + 10)).toBe(false);
+  });
+
+  test("keys are independent", () => {
+    const t0 = 1_000_000;
+    for (let i = 0; i < 5; i++) checkRateLimit("ip-a", 5, 60_000, t0 + i);
+    expect(checkRateLimit("ip-b", 5, 60_000, t0 + 10)).toBe(true);
+  });
+
+  test("window expiry frees the key again", () => {
+    const t0 = 1_000_000;
+    for (let i = 0; i < 5; i++) checkRateLimit("ip-a", 5, 60_000, t0 + i);
+    expect(checkRateLimit("ip-a", 5, 60_000, t0 + 61_000)).toBe(true);
   });
 });

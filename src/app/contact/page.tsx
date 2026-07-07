@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { CONTACT_COPY, SITE } from "@/lib/content";
 import { CalendlyPanel } from "@/components/contact/CalendlyPanel";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact & Booking",
@@ -62,6 +63,16 @@ export default function ContactPage() {
             <p className="mt-6 inline-flex items-center gap-2 rounded-button border border-teal-400/30 bg-teal-500/10 px-4 py-2 text-sm font-semibold text-teal-300">
               {CONTACT_COPY.meta}
             </p>
+
+            {/* Written-request alternative — posts to /api/leads, which also
+                emails the lead to the inbox (see ContactForm). */}
+            <div className="mt-10 flex items-center gap-3">
+              <span className="h-px w-6 bg-teal-500" />
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-teal-400">
+                Prefer to write instead?
+              </span>
+            </div>
+            <ContactForm />
           </div>
 
           {/* Right — Calendly embed (kept in a bordered panel for the dark theme) */}

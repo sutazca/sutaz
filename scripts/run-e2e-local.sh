@@ -34,7 +34,9 @@ cp -rT public .next/standalone/public 2>>"$LOG" || true
 # 3. Start server (standalone)
 echo "=== Start standalone server on :$PORT ===" | tee -a "$LOG"
 cd .next/standalone
-PORT=$PORT HOSTNAME=127.0.0.1 node server.js > "$SRVLOG" 2>&1 &
+# LEADS_RATE_MAX relaxed for the suite: the runner probe + api/contact-form
+# specs legitimately POST /api/leads more than the 5/min production default.
+LEADS_RATE_MAX=1000 PORT=$PORT HOSTNAME=127.0.0.1 node server.js > "$SRVLOG" 2>&1 &
 SERVER_PID=$!
 cd "$ROOT"
 echo "server PID: $SERVER_PID" | tee -a "$LOG"
