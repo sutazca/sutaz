@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { SITE, CONTACT_COPY } from "@/lib/content";
 import { EASE_OUT_EXPO as ease } from "@/lib/motion";
+import { ParallaxLayer } from "@/components/ui/ParallaxLayer";
+import { useMounted } from "@/hooks/useMounted";
 
 /**
  * FinalCTA — homepage closing conversion band (before the footer).
@@ -15,19 +16,20 @@ import { EASE_OUT_EXPO as ease } from "@/lib/motion";
  */
 
 export function FinalCTA() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   return (
     <section className="relative overflow-hidden py-24 md:py-32">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded industrial control room */}
-      <img
-        src="/sections/final-cta-graded.jpg"
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="section-media pointer-events-none absolute inset-0 h-full w-full"
-      />
+      <ParallaxLayer speed={-0.08} className="absolute inset-0">
+        <img
+          src="/sections/final-cta-graded.jpg"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="section-media pointer-events-none absolute inset-0 h-full w-full scale-110"
+        />
+      </ParallaxLayer>
       <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <motion.div

@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { ParallaxLayer } from "@/components/ui/ParallaxLayer";
 import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
@@ -30,14 +31,18 @@ const STATS: StatItem[] = [
 export function StatsBand() {
   return (
     <section className="relative overflow-hidden py-10">
-      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic-arm band */}
-      <img
-        src="/sections/stats-graded.jpg"
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="section-media pointer-events-none absolute inset-0 h-full w-full"
-      />
+      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic-arm band.
+          Parallax-drifted against the static counters = Z-space separation;
+          scale-110 overscans so the drift never reveals section edges. */}
+      <ParallaxLayer speed={-0.08} className="absolute inset-0">
+        <img
+          src="/sections/stats-graded.jpg"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="section-media pointer-events-none absolute inset-0 h-full w-full scale-110"
+        />
+      </ParallaxLayer>
       <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <div className="divider-glow" aria-hidden />

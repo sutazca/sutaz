@@ -202,11 +202,21 @@ test.describe("Service Menu (flagship)", () => {
     const before = await readShowing();
     expect(before.shown).toBe(before.total); // no filters → shown == total
 
-    // Toggle Moat Only
-    await page.getByRole("button", { name: /Moat Only/i }).click();
-    await page.waitForTimeout(500);
-    const after = await readShowing();
+    // Toggle Moat Only. Under full-suite machine load React hydration can lag
+    // past networkidle, so a single early click can land on a not-yet-
+    // interactive button (verified on a slow runner: isolated run passed,
+    // suite run dead-clicked deterministically). Retry idempotently — click
+    // only while the button isn't active ("bg-teal-500/20" is the active-only
+    // class) — until the filter takes effect. Assertions below are unchanged.
+    const moatButton = page.getByRole("button", { name: /Moat Only/i });
+    await expect(async () => {
+      const cls = (await moatButton.getAttribute("class")) ?? "";
+      if (!cls.includes("bg-teal-500/20")) await moatButton.click();
+      await page.waitForTimeout(300);
+      expect((await readShowing()).shown).toBeLessThan(before.shown);
+    }).toPass({ timeout: 15_000 });
 
+    const after = await readShowing();
     // Moat-only count must be strictly less than full (vertical has both kinds)
     expect(after.shown).toBeLessThan(before.shown);
     expect(after.shown).toBeGreaterThan(0);

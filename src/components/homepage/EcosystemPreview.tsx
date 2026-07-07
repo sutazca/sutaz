@@ -7,6 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { VERTICALS, TOTAL_SERVICES } from "@/lib/service-catalog";
 import { EASE_OUT_EXPO as ease } from "@/lib/motion";
+import { ParallaxLayer } from "@/components/ui/ParallaxLayer";
 
 /**
  * EcosystemPreview — pulls the 5 verticals from the real service catalog.
@@ -27,13 +28,15 @@ export function EcosystemPreview() {
   return (
     <section className="relative overflow-hidden py-24 md:py-32">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded ship bridge controls */}
-      <img
-        src="/sections/ecosystems-graded.jpg"
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="section-media pointer-events-none absolute inset-0 h-full w-full"
-      />
+      <ParallaxLayer speed={-0.08} className="absolute inset-0">
+        <img
+          src="/sections/ecosystems-graded.jpg"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="section-media pointer-events-none absolute inset-0 h-full w-full scale-110"
+        />
+      </ParallaxLayer>
       <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <SectionHeading

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { motion } from "motion/react";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll } from "motion/react";
 import { TextFlip } from "@/components/ui/text-flip";
 import { AnimatedArrow } from "@/components/ui/animated-arrow";
 import { SITE, HERO } from "@/lib/content";
@@ -12,29 +13,88 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 /**
  * HeroSection — Engineering-Luxury v2 (DESIGN-ELEVATION §4.1, §4.2).
  *
- * The hero is now a single dominant element: a full-bleed atmospheric visual
- * (the rotating wireframe orb) behind 3 editorial elements (eyebrow →
- * headline → CTA). "One dominant element per viewport" — the reference video's
- * discipline applied to an engineering brand.
+ * The hero is a single dominant element: a full-bleed atmospheric visual
+ * (the wireframe orb) behind 3 editorial elements (eyebrow → headline → CTA).
+ * "One dominant element per viewport."
  *
- * Why <video> + poster: the orb's signature motion is the §4.5 "one signature
- * hero motion moment." The video is verified web-optimal (H.264 / yuv420p /
- * 720p / 3s seamless loop / no audio). Under prefers-reduced-motion we render
- * ONLY the static poster PNG — native <video autoPlay> does not honor the CSS
- * reduced-motion query (verified web.dev 2026-06-29), so the JS hook gates it.
+ * Layer 0 architecture (3D elevation):
+ *  - The static poster PNG renders UNCONDITIONALLY as the base layer — it is
+ *    the LCP / no-JS / no-WebGL / reduced-motion guarantee. Hero text and
+ *    poster paint before a single three.js byte loads.
+ *  - A live React-Three-Fiber scene (HeroOrb: rotating wireframe orb + glass
+ *    panes that fan apart in Z as you scroll) mounts client-only via
+ *    next/dynamic {ssr:false}, one idle tick after hydration so three.js
+ *    parse/compile never lands in the initial main-thread window (protects
+ *    the longtask budget in e2e/performance.spec.ts).
+ *  - prefers-reduced-motion: the scene never mounts; poster only. The JS hook
+ *    gates it (CSS reduced-motion doesn't stop a WebGL frame loop).
+ *  - The legacy orb video assets stay in public/hero/ for rollback; the
+ *    <video> element itself was replaced by the R3F scene.
  *
  * SSR safety: content renders VISIBLE in SSR HTML (no opacity:0 baked in) and
  * animates only after mount. The poster shows before any JS — worst case is a
  * static hero, never an invisible one.
- *
- * Stats / WorkflowDiagram / ROI calculator relocated:
- *  - 120s / 99.8% / 30-day stats → StatsBand (already canonical there).
- *  - WorkflowDiagram + HeroROICalculator → new HeroProof section below the fold.
  */
+
+const HeroOrb = dynamic(() => import("./HeroOrb"), { ssr: false });
 
 export function HeroSection() {
   const [mounted, setMounted] = useState(false);
+  const [showOrb, setShowOrb] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Mount the WebGL orb only when it can actually run smoothly:
+  //  1. Hardware-acceleration gate — on software-rendered WebGL (SwiftShader/
+  //     llvmpipe: GPU-less VMs, some headless/remote setups) every frame is
+  //     CPU-drawn, turning the frame loop into continuous main-thread long
+  //     tasks. Those environments keep the poster. Measured on a GPU-less
+  //     box: HEAD = 1 long task/75ms; naive always-on orb = 30 tasks/360ms.
+  //     `?forceOrb=1` overrides the gate so e2e can exercise the mount path.
+  //  2. Idle-phase split — import("three") evaluates the heavy module in its
+  //     own idle task, then HeroOrb's chunk (R3F + scene) mounts on the next
+  //     idle tick, so hydration never eats one giant task.
+  useEffect(() => {
+    let cancelled = false;
+    const idle = (cb: () => void) =>
+      typeof requestIdleCallback === "function"
+        ? requestIdleCallback(cb)
+        : window.setTimeout(cb, 200);
+
+    const hardwareAccelerated = (): boolean => {
+      try {
+        const probe = document.createElement("canvas");
+        const gl =
+          probe.getContext("webgl2") ?? probe.getContext("webgl") ?? null;
+        if (!gl) return false;
+        const ext = gl.getExtension("WEBGL_debug_renderer_info");
+        const renderer = ext
+          ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL))
+          : "";
+        return !/swiftshader|llvmpipe|software|basic render/i.test(renderer);
+      } catch {
+        return false;
+      }
+    };
+
+    idle(() => {
+      if (cancelled) return;
+      const forced = new URLSearchParams(window.location.search).has(
+        "forceOrb",
+      );
+      if (!forced && !hardwareAccelerated()) return; // poster stays
+      import("three").then(() => {
+        if (!cancelled) idle(() => !cancelled && setShowOrb(true));
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const reveal = (delay = 0) => ({
     initial: mounted ? { opacity: 0, y: 24 } : false,
@@ -43,35 +103,24 @@ export function HeroSection() {
   });
 
   return (
-    <section className="relative flex min-h-[100svh] items-center overflow-hidden">
-      {/* Layer 0 — the signature atmospheric visual (full-bleed).
-          Reduced-motion: static poster only. Otherwise the looping orb video. */}
-      {prefersReducedMotion ? (
-        <img
-          src="/hero/orb-poster.png"
-          alt=""
-          aria-hidden
-          className="hero-video absolute inset-0 h-full w-full"
-        />
-      ) : (
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/hero/orb-poster.png"
-          aria-hidden
-          className="hero-video absolute inset-0 h-full w-full"
-        >
-          {/* Source order per web.dev: WebM (VP9) first — Firefox decodes VP9
-              natively (no OS-codec dependency); H.264 High profile can't decode
-              in headless/Linux Firefox (NS_ERROR_PARSED_DATA_CACHED). MP4 stays
-              as the Safari fallback (Safari has no WebM support). Verified root
-              cause + fix 2026-06-29 via Mozilla docs + Bugzilla #1130450. */}
-          <source src="/hero/orb.webm" type="video/webm" />
-          <source src="/hero/orb.mp4" type="video/mp4" />
-        </video>
-      )}
+    <section
+      ref={sectionRef}
+      className="relative flex min-h-[100svh] items-center overflow-hidden"
+    >
+      {/* Layer 0a — static poster, ALWAYS rendered. LCP / no-JS / no-WebGL /
+          reduced-motion guarantee: the hero never depends on three.js. */}
+      <img
+        src="/hero/orb-poster.png"
+        alt=""
+        aria-hidden
+        className="hero-video absolute inset-0 h-full w-full"
+      />
+
+      {/* Layer 0b — live R3F orb scene (scroll-driven Z-space glass panes),
+          client-only, idle-deferred, skipped entirely under reduced motion. */}
+      {showOrb && !prefersReducedMotion ? (
+        <HeroOrb progress={scrollYProgress} />
+      ) : null}
 
       {/* Layer 1 — WCAG scrim. Darkens the orb so white copy holds ≥4.5:1.
           Radial vignette keeps the orb's glow visible at center while edges

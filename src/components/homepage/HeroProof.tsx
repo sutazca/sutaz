@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { HeroROICalculator } from "@/components/homepage/ROICalculator";
 import { WorkflowDiagram } from "@/components/homepage/WorkflowDiagram";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ParallaxLayer } from "@/components/ui/ParallaxLayer";
 import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 import { useState } from "react";
 
@@ -44,8 +45,14 @@ export function HeroProof() {
           {...reveal(0.1)}
           className="mx-auto mt-16 grid max-w-5xl items-start gap-5 lg:grid-cols-[1fr_1fr]"
         >
-          <WorkflowDiagram />
-          <HeroROICalculator />
+          {/* Z-space separation: diagram and calculator drift at contrasting
+              speeds so the pair reads as layered depth while scrolling. */}
+          <ParallaxLayer speed={-0.1}>
+            <WorkflowDiagram />
+          </ParallaxLayer>
+          <ParallaxLayer speed={0.06}>
+            <HeroROICalculator />
+          </ParallaxLayer>
         </motion.div>
       </div>
     </section>

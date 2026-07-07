@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { AlertTriangle, CheckCircle2, ArrowRight } from "lucide-react";
 import { PAIN_CURE_PAIRS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ParallaxLayer } from "@/components/ui/ParallaxLayer";
 import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 
 /**
@@ -16,14 +17,17 @@ import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 export function ProblemSolution() {
   return (
     <section className="relative overflow-hidden py-24 md:py-32">
-      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic hand → nodes */}
-      <img
-        src="/sections/problem-solution-graded.jpg"
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="section-media pointer-events-none absolute inset-0 h-full w-full"
-      />
+      {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic hand → nodes.
+          Parallax-drifted against the static cards (Z-space separation). */}
+      <ParallaxLayer speed={-0.08} className="absolute inset-0">
+        <img
+          src="/sections/problem-solution-graded.jpg"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="section-media pointer-events-none absolute inset-0 h-full w-full scale-110"
+        />
+      </ParallaxLayer>
       <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <SectionHeading

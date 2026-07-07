@@ -1,6 +1,7 @@
 import { FAQ_ITEMS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FaqAccordion } from "@/components/homepage/FaqAccordion";
+import { ParallaxLayer } from "@/components/ui/ParallaxLayer";
 
 /**
  * FAQSection — blueprint Section 6.5.
@@ -26,13 +27,15 @@ export function FAQSection() {
   return (
     <section id="faq" className="relative scroll-mt-20 overflow-hidden py-20 md:py-24">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic components */}
-      <img
-        src="/sections/atmosphere-graded.jpg"
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="section-media pointer-events-none absolute inset-0 h-full w-full"
-      />
+      <ParallaxLayer speed={-0.08} className="absolute inset-0">
+        <img
+          src="/sections/atmosphere-graded.jpg"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="section-media pointer-events-none absolute inset-0 h-full w-full scale-110"
+        />
+      </ParallaxLayer>
       <div className="section-scrim absolute inset-0" aria-hidden />
       <div className="container-content">
         <SectionHeading
