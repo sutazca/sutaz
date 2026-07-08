@@ -25,11 +25,11 @@ export function FAQSection() {
   };
 
   return (
-    <section id="faq" className="relative scroll-mt-20 overflow-hidden py-20 md:py-24">
+    <section id="faq" className="section-pad relative scroll-mt-20 overflow-hidden">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic components */}
       <ParallaxLayer speed={-0.08} className="absolute inset-0">
         <img
-          src="/sections/atmosphere-graded.jpg"
+          src="/sections/atmosphere-graded.webp"
           alt=""
           aria-hidden
           loading="lazy"

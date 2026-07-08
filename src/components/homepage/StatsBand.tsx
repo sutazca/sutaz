@@ -36,7 +36,7 @@ export function StatsBand() {
           scale-110 overscans so the drift never reveals section edges. */}
       <ParallaxLayer speed={-0.08} className="absolute inset-0">
         <img
-          src="/sections/stats-graded.jpg"
+          src="/sections/stats-graded.webp"
           alt=""
           aria-hidden
           loading="lazy"

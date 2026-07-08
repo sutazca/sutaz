@@ -19,11 +19,11 @@ export function FinalCTA() {
   const mounted = useMounted();
 
   return (
-    <section className="relative overflow-hidden py-24 md:py-32">
+    <section className="section-pad relative overflow-hidden">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded industrial control room */}
       <ParallaxLayer speed={-0.08} className="absolute inset-0">
         <img
-          src="/sections/final-cta-graded.jpg"
+          src="/sections/final-cta-graded.webp"
           alt=""
           aria-hidden
           loading="lazy"
@@ -58,7 +58,7 @@ export function FinalCTA() {
             <div className="mt-9">
               <Link
                 href="/contact"
-                className="group inline-flex items-center justify-center gap-2 rounded-button bg-white px-8 py-4 text-base font-semibold text-teal-700 transition-all hover:scale-[1.03] hover:bg-teal-50"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-base font-semibold text-teal-700 transition-all hover:scale-[1.03] hover:bg-teal-50"
               >
                 {SITE.ctaPrimary}
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />

@@ -1,30 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, JetBrains_Mono } from "next/font/google";
+import { Antonio, Geist, JetBrains_Mono } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SITE } from "@/lib/content";
 import "./globals.css";
 
 /**
- * Fonts — Engineering-Luxury pairing (verified on Google Fonts, both variable).
- *  - Fraunces: editorial old-style serif, opsz axis (display-cut at large sizes).
- *              Headlines only — signals craft/engineering without being generic.
+ * Fonts — v3 cinematic pairing (verified in next/font/google font-data).
+ *  - Antonio:  condensed grotesque (variable wght 100–700). UPPERCASE display
+ *              only — the dark-cinematic agency register (reference: elypt.io).
  *  - Geist:    Vercel's Swiss grotesque, built for dark developer-tooling UIs.
- *              Body + UI.
+ *              Body + UI (unchanged, matches the SutazStays template).
  *  - JetBrains Mono: technical numerals (ROI counter, code, stats).
  */
-const fraunces = Fraunces({
+const antonio = Antonio({
   subsets: ["latin"],
   variable: "--font-display",
-  // display:"swap" + preload:true + adjustFontFallback:true (default) → Fraunces
-  // is fetched high-priority and preloaded so it's ready at first paint, and the
-  // auto-generated fallback @font-face matches its metrics (both render 63px) so
-  // any swap is shift-free. (A residual CLS in the test env comes from the
-  // fallback's local("Times New Roman") resolving as a loading font on headless
-  // Chromium; the @font-face override in globals.css widens the local() candidate
-  // list to cover that.)
+  // display:"swap" + preload:true + adjustFontFallback:true (default) → the
+  // font is fetched high-priority and the auto-generated fallback @font-face
+  // matches its metrics so any swap is shift-free. (Residual CLS in headless
+  // test envs comes from the fallback's local() candidates not resolving; the
+  // @font-face override in globals.css widens the local() list — its metric
+  // numbers MUST mirror the build-emitted "Antonio Fallback" values.)
   display: "swap",
-  axes: ["opsz", "SOFT", "WONK"],
   preload: true,
 });
 
@@ -97,7 +95,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-CA"
-      className={`${fraunces.variable} ${geist.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${antonio.variable} ${geist.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-navy-500">
         <a href="#main" className="skip-link">

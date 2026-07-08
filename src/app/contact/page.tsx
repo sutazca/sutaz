@@ -44,7 +44,7 @@ export default function ContactPage() {
         </div>
       </header>
 
-      <section className="py-16 md:py-24">
+      <section className="section-pad">
         <div className="container-content grid items-start gap-10 md:grid-cols-2 md:gap-16">
           {/* Left — verbatim copy (Blueprint Doc Section 3, Page 3) */}
           <div>
@@ -60,7 +60,7 @@ export default function ContactPage() {
             <p className="mt-6 text-lg leading-relaxed text-slate-300">
               {CONTACT_COPY.body}
             </p>
-            <p className="mt-6 inline-flex items-center gap-2 rounded-button border border-teal-400/30 bg-teal-500/10 px-4 py-2 text-sm font-semibold text-teal-300">
+            <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-teal-400/30 bg-teal-500/10 px-4 py-2 text-sm font-semibold text-teal-300">
               {CONTACT_COPY.meta}
             </p>
 

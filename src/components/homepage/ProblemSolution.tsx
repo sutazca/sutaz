@@ -16,12 +16,12 @@ import { EASE_OUT_EXPO as ease } from "@/lib/motion";
  */
 export function ProblemSolution() {
   return (
-    <section className="relative overflow-hidden py-24 md:py-32">
+    <section className="section-pad relative overflow-hidden">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic hand → nodes.
           Parallax-drifted against the static cards (Z-space separation). */}
       <ParallaxLayer speed={-0.08} className="absolute inset-0">
         <img
-          src="/sections/problem-solution-graded.jpg"
+          src="/sections/problem-solution-graded.webp"
           alt=""
           aria-hidden
           loading="lazy"

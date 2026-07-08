@@ -63,7 +63,6 @@ export function Navbar() {
         <SutazLogo
           href="/"
           variant="lockup"
-          eyebrow
           size="md"
           onClick={() => setMobileOpen(false)}
         />
@@ -78,7 +77,7 @@ export function Navbar() {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "group relative rounded-button px-4 py-2 text-sm font-medium transition-colors",
+                    "group relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
                     active ? "text-white" : "text-slate-300 hover:text-white",
                   )}
                 >
@@ -98,7 +97,7 @@ export function Navbar() {
         <div className="hidden md:block">
           <Link
             href="/contact"
-            className="group relative inline-flex min-h-[44px] items-center gap-2 overflow-hidden rounded-button bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-teal-600 glow-teal"
+            className="group relative inline-flex min-h-[44px] items-center gap-2 overflow-hidden rounded-full bg-teal-700 px-5 py-3 text-sm font-medium text-white transition-all hover:bg-teal-600 glow-teal"
           >
             <span className="relative z-10">{SITE.ctaPrimary}</span>
             <span className="relative z-10 transition-transform group-hover:translate-x-0.5">→</span>
@@ -108,7 +107,7 @@ export function Navbar() {
         {/* Mobile toggle */}
         <button
           type="button"
-          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-button p-2 text-white md:hidden"
+          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2 text-white md:hidden"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
@@ -145,7 +144,7 @@ export function Navbar() {
                       href={link.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "block rounded-button px-4 py-4 font-display text-2xl font-semibold transition-colors",
+                        "block rounded-full px-4 py-4 font-display text-base font-medium uppercase tracking-[0.08em] transition-colors",
                         active
                           ? "bg-teal-500/10 text-white"
                           : "text-white hover:bg-white/5",
@@ -165,7 +164,7 @@ export function Navbar() {
               >
                 <Link
                   href="/contact"
-                  className="block rounded-button bg-teal-700 px-5 py-4 text-center font-semibold text-white glow-teal"
+                  className="block rounded-full bg-teal-700 px-5 py-4 text-center font-medium text-white glow-teal"
                   onClick={() => setMobileOpen(false)}
                 >
                   {SITE.ctaPrimary}

@@ -20,7 +20,7 @@ export function EcosystemBlock({
   id, eyebrow, body, features, workflowSteps, ctaLabel, reverse = false,
 }: EcosystemBlockProps) {
   return (
-    <section id={id} className="scroll-mt-24 border-t border-white/5 py-20 md:py-28 first:border-t-0">
+    <section id={id} className="section-pad scroll-mt-24 border-t border-white/5 first:border-t-0">
       <div className="container-content grid items-center gap-10 md:grid-cols-2 md:gap-16">
         <div className={reverse ? "md:order-2" : ""}>
           <div className="flex items-center gap-3">

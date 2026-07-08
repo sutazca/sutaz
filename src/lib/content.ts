@@ -31,6 +31,23 @@ export const HERO = {
 } as const;
 
 /* --------------------------------------------------------------------------
+ * Homepage — Hero v3 (cinematic redesign)
+ * OWNER-REVIEW: v3 cinematic hero copy — supersedes HERO.headline pending
+ * sign-off. Antonio renders these UPPERCASE via the CSS display token; the
+ * strings stay readable here so the owner can review the wording as prose.
+ * -------------------------------------------------------------------------- */
+export const HERO_V3 = {
+  /** OWNER-REVIEW: v3 cinematic hero copy — supersedes HERO.headline pending sign-off. */
+  lines: ["Automation,", "engineered", "to be permanent."],
+  altOptions: [
+    ["Workflows", "without", "friction."],
+    ["Built once.", "Runs", "forever."],
+  ],
+  subline:
+    "Custom automation engines for Canadian real estate, construction, and high-volume operations — engineered end to end, then handed over.",
+} as const;
+
+/* --------------------------------------------------------------------------
  * Homepage — Problem / Solution pairs
  * Primary pair is VERBATIM (Blueprint Doc Section 3).
  * Remaining three pairs are derived from Master Blueprint Doc Section 1

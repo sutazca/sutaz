@@ -4,11 +4,11 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll } from "motion/react";
-import { TextFlip } from "@/components/ui/text-flip";
 import { AnimatedArrow } from "@/components/ui/animated-arrow";
-import { SITE, HERO } from "@/lib/content";
+import { SITE, HERO_V3 } from "@/lib/content";
 import { EASE_OUT_EXPO as ease } from "@/lib/motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useMounted } from "@/hooks/useMounted";
 
 /**
  * HeroSection — Engineering-Luxury v2 (DESIGN-ELEVATION §4.1, §4.2).
@@ -39,7 +39,7 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 const HeroOrb = dynamic(() => import("./HeroOrb"), { ssr: false });
 
 export function HeroSection() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [showOrb, setShowOrb] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -96,9 +96,14 @@ export function HeroSection() {
     };
   }, []);
 
+  // whileInView (not animate) so the entrance actually plays on load — the
+  // hero is above the fold, so it fires immediately; matches FinalCTA. The
+  // mounted gate keeps SSR HTML visible (initial:false server-side, no baked
+  // opacity:0).
   const reveal = (delay = 0) => ({
     initial: mounted ? { opacity: 0, y: 24 } : false,
-    animate: { opacity: 1, y: 0 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
     transition: { duration: 0.5, delay, ease },
   });
 
@@ -134,7 +139,7 @@ export function HeroSection() {
       />
 
       {/* Content — 3 elements only (§4.1: one dominant idea per viewport) */}
-      <div className="container-content relative z-10 py-40">
+      <div className="container-content relative z-10 py-24">
         <motion.div {...reveal(0)} className="flex items-center gap-3">
           <span className="h-px w-8 bg-teal-500" />
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-teal-400">
@@ -144,25 +149,20 @@ export function HeroSection() {
 
         <motion.h1
           {...reveal(0.08)}
-          className="text-display-hero mt-6 max-w-[14ch] text-white"
+          className="text-display-hero mt-6 max-w-[18ch] text-white"
         >
-          We engineer{" "}
-          <span className="text-gradient-teal">
-            <TextFlip interval={2.4}>
-              workflows
-              <span className="text-gradient-teal">ecosystems</span>
-              <span className="text-gradient-teal">pipelines</span>
-              <span className="text-gradient-teal">agents</span>
-            </TextFlip>
-          </span>{" "}
-          that permanently eliminate your team&apos;s admin bottlenecks.
+          {HERO_V3.lines.map((line) => (
+            <span key={line} className="block">
+              {line}
+            </span>
+          ))}
         </motion.h1>
 
         <motion.p
           {...reveal(0.16)}
-          className="mt-7 max-w-xl text-lg leading-relaxed text-slate-200"
+          className="mt-7 max-w-xl text-base leading-relaxed text-slate-200 md:text-lg"
         >
-          {HERO.subheadline}
+          {HERO_V3.subline}
         </motion.p>
 
         <motion.div
@@ -171,7 +171,7 @@ export function HeroSection() {
         >
           <Link
             href="/contact"
-            className="group inline-flex min-h-[44px] items-center justify-center gap-2 rounded-button bg-teal-700 px-7 py-4 text-base font-semibold text-white transition-all hover:bg-teal-600 glow-always"
+            className="group inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-teal-700 px-8 py-4 text-base font-semibold text-white transition-all hover:bg-teal-600 glow-always"
           >
             {SITE.ctaPrimary}
             <AnimatedArrow className="transition-transform group-hover:translate-x-1" />
@@ -181,6 +181,17 @@ export function HeroSection() {
             Free 15-minute diagnostic — no obligation
           </span>
         </motion.div>
+      </div>
+
+      {/* Scroll cue — bottom-center, decorative (§ elypt register). */}
+      <div
+        aria-hidden
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
+      >
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-slate-400">
+          Scroll
+        </span>
+        <span className="mx-auto mt-2 block h-8 w-px bg-white/25" />
       </div>
     </section>
   );

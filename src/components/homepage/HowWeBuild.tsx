@@ -16,11 +16,11 @@ import { ParallaxLayer } from "@/components/ui/ParallaxLayer";
 
 export function HowWeBuild() {
   return (
-    <section className="relative overflow-hidden py-24 md:py-32">
+    <section className="section-pad relative overflow-hidden">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded robotic hand + CRT */}
       <ParallaxLayer speed={-0.08} className="absolute inset-0">
         <img
-          src="/sections/how-we-build-graded.jpg"
+          src="/sections/how-we-build-graded.webp"
           alt=""
           aria-hidden
           loading="lazy"
@@ -82,7 +82,7 @@ export function HowWeBuild() {
         >
           <Link
             href="/lab"
-            className="group inline-flex items-center justify-center gap-2 rounded-button border border-[var(--color-border-strong)] bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-white transition-all hover:border-teal-400/50 hover:bg-white/[0.06]"
+            className="group inline-flex items-center justify-center gap-2 rounded-full border border-[var(--color-border-strong)] bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-white transition-all hover:border-teal-400/50 hover:bg-white/[0.06]"
           >
             See the full Engineering Lab
             <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />

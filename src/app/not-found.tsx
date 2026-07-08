@@ -9,7 +9,7 @@ export default function NotFound() {
     <section className="container-content relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden py-20 text-center">
       {/* Atmospheric imagery (Phase 3 §6 special states) — graded deep-space nebula */}
       <img
-        src="/sections/deep-space-graded.jpg"
+        src="/sections/deep-space-graded.webp"
         alt=""
         aria-hidden
         className="section-media pointer-events-none absolute inset-0 h-full w-full"

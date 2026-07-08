@@ -26,11 +26,11 @@ const VERTICAL_ICONS: Record<string, LucideIcon> = {
 
 export function EcosystemPreview() {
   return (
-    <section className="relative overflow-hidden py-24 md:py-32">
+    <section className="section-pad relative overflow-hidden">
       {/* Atmospheric imagery layer (Phase 3 §4.4) — graded ship bridge controls */}
       <ParallaxLayer speed={-0.08} className="absolute inset-0">
         <img
-          src="/sections/ecosystems-graded.jpg"
+          src="/sections/ecosystems-graded.webp"
           alt=""
           aria-hidden
           loading="lazy"
@@ -122,7 +122,7 @@ export function EcosystemPreview() {
             </p>
             <Link
               href="/contact"
-              className="mt-5 inline-flex items-center gap-2 rounded-button bg-white px-5 py-3 text-sm font-semibold text-teal-700 transition-transform hover:scale-[1.02]"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-teal-700 transition-transform hover:scale-[1.02]"
             >
               Book the audit
               <ArrowRight size={15} />

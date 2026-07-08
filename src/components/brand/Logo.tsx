@@ -26,8 +26,6 @@ type LogoVariant = "mark" | "lockup";
 interface LogoProps {
   variant?: LogoVariant;
   className?: string;
-  /** Show the mono "automation" eyebrow under the wordmark (navbar only). */
-  eyebrow?: boolean;
   /** Wordmark size scale; defaults tuned per placement. */
   size?: "sm" | "md";
   /** Render as a Next link wrapping the lockup (defaults true for lockup). */
@@ -110,27 +108,18 @@ export function LogoMark({
 export function SutazLogo({
   variant = "lockup",
   className,
-  eyebrow = false,
   size = "md",
   href = "/",
   onClick,
 }: LogoProps) {
   const markSize = size === "sm" ? "h-8 w-8" : "h-9 w-9";
-  const wordSize = size === "sm" ? "text-sm" : "text-base";
 
   const inner = (
     <span className={cn("group flex items-center gap-2.5", className)}>
       <LogoMark className={cn(markSize, "transition-transform duration-300 group-hover:rotate-[-3deg]")} />
       {variant === "lockup" && (
-        <span className="flex flex-col leading-none">
-          <span className={cn("font-display font-bold tracking-tight text-white", wordSize)}>
-            Sutaz Automation
-          </span>
-          {eyebrow && (
-            <span className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-teal-400">
-              automation
-            </span>
-          )}
+        <span className="font-display text-lg font-medium uppercase tracking-[0.18em] text-white">
+          Sutaz
         </span>
       )}
     </span>

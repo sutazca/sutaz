@@ -31,7 +31,7 @@ export default function LabPage() {
       </section>
 
       {/* Phase timeline */}
-      <section className="py-16 md:py-20">
+      <section className="section-pad">
         <div className="container-content">
           <h2 className="mb-10 text-center font-display text-2xl font-bold text-white">
             The 30-Day Phased Rollout
@@ -41,7 +41,7 @@ export default function LabPage() {
       </section>
 
       {/* Sandbox isolation */}
-      <section className="py-16 md:py-20">
+      <section className="section-pad">
         <div className="container-content">
           <SectionHeading
             eyebrow="Sandbox Staging Protocol"
@@ -56,7 +56,7 @@ export default function LabPage() {
       </section>
 
       {/* Safety guarantees + CTA */}
-      <section className="py-16 md:py-20">
+      <section className="section-pad">
         <div className="container-content">
           <div className="mx-auto max-w-2xl rounded-card glass-card p-8 text-center">
             <h2 className="font-display text-2xl font-bold text-white">
